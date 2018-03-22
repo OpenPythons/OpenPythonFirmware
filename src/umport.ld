@@ -1,8 +1,8 @@
 /* Specify the memory areas */
 MEMORY
 {
-    FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 4M
-    RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 64K /* the length is dynamically configured */
+    FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 1024K
+    RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 256K
 }
  
 /* top end of the stack */

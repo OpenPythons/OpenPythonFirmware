@@ -40,6 +40,9 @@ int main(int argc, char **argv) {
     while (true) {
         gc_init(&_ebss, (uint8_t*)&_sdata + UMPORT_CONTROLLER->RAM_SIZE - UMPORT_CONTROLLER->STACK_SIZE);
         mp_init();
+        mp_obj_list_init(mp_sys_path, 0);
+        mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
+        mp_obj_list_init(mp_sys_argv, 0);
 
         do_str("for i in range(1):pass", MP_PARSE_FILE_INPUT);
 

@@ -9,10 +9,13 @@
 #include "py/repl.h"
 #include "py/gc.h"
 #include "py/mperrno.h"
+#include "py/mphal.h"
 #include "lib/utils/interrupt_char.h"
 #include "lib/utils/pyexec.h"
 #include "umport_mcu.h"
 #include <math.h>
+
+#define UMPORT_DEBUG(s) (mp_hal_stdout_tx_strn((s), strlen((s))));
 
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;

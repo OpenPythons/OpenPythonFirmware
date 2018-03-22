@@ -17,11 +17,8 @@ INC += -I.
 INC += -I$(TOP)
 INC += -I$(BUILD)
 
-CFLAGS_CORTEX_M = -mthumb
-CFLAGS_CORTEX_M += -mfpu=fpv5-d16 -mfloat-abi=hard
-CFLAGS_MCU_f7 = $(CFLAGS_CORTEX_M) -mtune=cortex-m7 -mcpu=cortex-m7
-
-CFLAGS = $(INC) -Wall -Werror -std=c99 -nostdlib $(CFLAGS_MCU_f7) $(COPT)
+CFLAGS_CORTEX_M4 = -mthumb -mtune=cortex-m4 -mcpu=cortex-m4 -mfloat-abi=soft -fsingle-precision-constant -Wdouble-promotion
+CFLAGS = $(INC) -Wall -Werror -std=c99 -nostdlib $(CFLAGS_CORTEX_M4) $(COPT)
 CFLAGS += -DMP_CONFIGFILE="<mpconfigport.h>"
 
 #Debugging/Optimization
@@ -54,7 +51,7 @@ SRC_LIB = $(addprefix lib/,\
 	mp-readline/readline.c \
 	)
 
-SRC_LIBM = $(addprefix lib/libm_dbl/,\
+SRC_LIBM_DBL = $(addprefix lib/libm_dbl/,\
 	__cos.c \
 	__expo2.c \
 	__fpclassify.c \
@@ -96,6 +93,35 @@ SRC_LIBM = $(addprefix lib/libm_dbl/,\
 	tanh.c \
 	tgamma.c \
 	trunc.c \
+	)
+
+SRC_LIBM = $(addprefix lib/libm/,\
+	math.c \
+	acoshf.c \
+	asinfacosf.c \
+	asinhf.c \
+	atan2f.c \
+	atanf.c \
+	atanhf.c \
+	ef_rem_pio2.c \
+	ef_sqrt.c \
+	erf_lgamma.c \
+	fmodf.c \
+	kf_cos.c \
+	kf_rem_pio2.c \
+	kf_sin.c \
+	kf_tan.c \
+	log1pf.c \
+	nearbyintf.c \
+	sf_cos.c \
+	sf_erf.c \
+	sf_frexp.c \
+	sf_ldexp.c \
+	sf_modf.c \
+	sf_sin.c \
+	sf_tan.c \
+	wf_lgamma.c \
+	wf_tgamma.c \
 	)
 
 SRC_QSTR += $(SRC_C)

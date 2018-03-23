@@ -37,7 +37,6 @@ LDFLAGS += --gc-sections
 
 SRC_C = \
 	main.c \
-	uart.c \
 	help.c \
 	mphalport.c \
 	modutime.c \

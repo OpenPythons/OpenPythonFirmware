@@ -29,4 +29,11 @@ typedef struct _rtc_t {
 
 #define RTC ((rtc_t*)0x40000300)
 
+typedef struct _ucp_uart_t {
+    volatile uint32_t TXR;
+    volatile uint32_t RXR;
+} ucp_uart_t;
+
+#define UART0 ((ucp_uart_t*)0x40000000)
+
 #endif

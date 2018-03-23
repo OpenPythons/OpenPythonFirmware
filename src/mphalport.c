@@ -5,6 +5,18 @@
 #include "umport_mcu.h"
 #include "mphalport.h"
 
+int mp_hal_stdin_rx_chr(void) {
+    unsigned char c = 0;
+    c = UART0->RXR;
+    return c;
+}
+
+void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
+    while (len--) {
+        UART0->TXR = *str++;
+    }
+}
+
 void mp_hal_delay_ms(mp_uint_t ms) {
     uint32_t start = mp_hal_ticks_ms();
     extern void mp_handle_pending(void);

@@ -19,6 +19,8 @@
 
 #define UMPORT_DEBUG(s) (mp_hal_stdout_tx_strn((s), strlen((s))));
 
+mp_uint_t gc_helper_get_regs_and_sp(mp_uint_t *regs);
+
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;
     if (nlr_push(&nlr) == 0) {
@@ -66,28 +68,20 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void gc_collect(void) {
-    // WARNING: This gc_collect implementation doesn't try to get root
-    // pointers from CPU registers, and thus may function incorrectly.
-    void *dummy;
-    gc_collect_start();
-    gc_collect_root(&dummy, ((mp_uint_t)MP_STATE_THREAD(stack_top) - (mp_uint_t)&dummy) / sizeof(mp_uint_t));
-    gc_collect_end();
-}
-
 mp_import_stat_t mp_import_stat(const char *path) {
     return mp_vfs_import_stat(path);
 }
 
+void gc_collect(void) {
+    gc_collect_start();
 
-mp_import_stat_t mp_import_stat(const char *path) {
-    mp_import_stat_t result = mp_vfs_import_stat(path);
+    // get the registers and the sp
+    mp_uint_t regs[10];
+    mp_uint_t sp = gc_helper_get_regs_and_sp(regs);
 
-    if (result == MP_IMPORT_STAT_NO_EXIST) {
-        result = mp_memzip_import_stat(path);
-    }
+    gc_collect_root((void**)sp, ((mp_uint_t)MP_STATE_THREAD(stack_top) - (mp_uint_t)sp) / sizeof(mp_uint_t));
 
-    return result;
+    gc_collect_end();
 }
 
 void nlr_jump_fail(void *val) {

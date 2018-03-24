@@ -44,6 +44,9 @@ SRC_C = \
 	moduos.c \
 	modutime.c \
 
+SRC_S = \
+	gchelper.s \
+
 SRC_LIB = $(addprefix lib/,\
 	utils/stdout_helpers.c \
 	utils/interrupt_char.c \
@@ -130,6 +133,7 @@ SRC_QSTR += $(SRC_C)
 OBJ =
 OBJ += $(PY_O)
 OBJ += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
+OBJ += $(addprefix $(BUILD)/, $(SRC_S:.s=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIB:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
 

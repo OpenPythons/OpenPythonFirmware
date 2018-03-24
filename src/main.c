@@ -10,9 +10,11 @@
 #include "py/gc.h"
 #include "py/mperrno.h"
 #include "py/mphal.h"
+#include "py/lexer.h"
 #include "extmod/vfs.h"
 #include "lib/utils/interrupt_char.h"
 #include "lib/utils/pyexec.h"
+#include "lib/memzip/memzip.h"
 #include "umport_mcu.h"
 #include <math.h>
 
@@ -76,18 +78,79 @@ void gc_collect(void) {
     gc_collect_end();
 }
 
+
+typedef struct _mp_reader_memzip_t {
+    byte *data;
+    size_t len;
+    size_t pos;
+} mp_reader_memzip_t;
+
+STATIC mp_uint_t mp_reader_memzip_readbyte(void *data) {
+    mp_reader_memzip_t *reader = (mp_reader_memzip_t*)data;
+    if (reader->pos >= reader->len) {
+        return MP_READER_EOF;
+    }
+    return reader->data[reader->pos++];
+}
+
+STATIC void mp_reader_memzip_close(void *data) {
+    mp_reader_memzip_t *reader = (mp_reader_memzip_t*)data;
+    m_del_obj(mp_reader_memzip_t, reader);
+}
+
+void mp_reader_new_file(mp_reader_t *reader, const char *filename) {
+    mp_reader_memzip_t *rf = m_new_obj(mp_reader_memzip_t);
+    void *data;
+    size_t len;
+
+    if (memzip_locate(filename, &data, &len) != MZ_OK) {
+        mp_raise_OSError(MP_ENOENT);
+    }
+
+    rf->data = data;
+    rf->len = len;
+    rf->pos = 0;
+    reader->data = rf;
+    reader->readbyte = mp_reader_memzip_readbyte;
+    reader->close = mp_reader_memzip_close;
+}
+
+
 mp_lexer_t *mp_lexer_new_from_file(const char *filename) {
-    mp_raise_OSError(MP_ENOENT);
+    // TODO: check vfs file
+
+    void *data;
+    size_t len;
+
+    if (memzip_locate(filename, &data, &len) != MZ_OK) {
+        mp_raise_OSError(MP_ENOENT);
+    }
+
+    return mp_lexer_new_from_str_len(qstr_from_str(filename), (const char *)data, (mp_uint_t)len, 0);
+}
+
+mp_import_stat_t mp_memzip_import_stat(const char *path) {
+    MEMZIP_FILE_INFO info;
+
+    if (memzip_stat(path, &info) != MZ_OK) {
+        return MP_IMPORT_STAT_NO_EXIST;
+    }
+
+    if (info.is_dir) {
+        return MP_IMPORT_STAT_DIR;
+    }
+    return MP_IMPORT_STAT_FILE;
 }
 
 mp_import_stat_t mp_import_stat(const char *path) {
-    return MP_IMPORT_STAT_NO_EXIST;
-}
+    mp_import_stat_t result = mp_vfs_import_stat(path);
 
-mp_obj_t mp_builtin_open(uint n_args, const mp_obj_t *args, mp_map_t *kwargs) {
-    return mp_const_none;
+    if (result == MP_IMPORT_STAT_NO_EXIST) {
+        result = mp_memzip_import_stat(path);
+    }
+
+    return result;
 }
-MP_DEFINE_CONST_FUN_OBJ_KW(mp_builtin_open_obj, 1, mp_builtin_open);
 
 void nlr_jump_fail(void *val) {
     while (1);

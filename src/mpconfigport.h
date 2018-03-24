@@ -77,7 +77,7 @@
 #define MICROPY_MODULE_BUILTIN_INIT (1)
 #define MICROPY_MODULE_WEAK_LINKS (1)
 #define MICROPY_MODULE_FROZEN_STR (0)
-#define MICROPY_MODULE_FROZEN_MPY (0)
+#define MICROPY_MODULE_FROZEN_MPY (1)
 #define MICROPY_CAN_OVERRIDE_BUILTINS (1)
 #define MICROPY_BUILTIN_METHOD_CHECK_SELF_ARG (1)
 #define MICROPY_USE_INTERNAL_ERRNO (0)
@@ -211,6 +211,8 @@ typedef long mp_off_t;
 #define MP_STATE_PORT MP_STATE_VM
 #define MP_SSIZE_MAX (0x7fffffff)
 #define MP_NEED_LOG2 (1)
+
+#define MICROPY_QSTR_EXTRA_POOL mp_qstr_frozen_const_pool
 
 // Hooks for a port to add builtins
 #define MICROPY_PORT_BUILTINS \

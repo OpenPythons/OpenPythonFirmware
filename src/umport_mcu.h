@@ -22,9 +22,6 @@ typedef struct _umport_controller_t {
 #define UMPORT_CONTROLLER ((umport_controller_t*)0x40000100)
 
 
-
-
-
 typedef struct _rtc_t {
     volatile uint32_t TICKS_MS;
     volatile uint32_t TICKS_US;

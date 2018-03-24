@@ -48,7 +48,6 @@ SRC_LIB = $(addprefix lib/,\
 	utils/stdout_helpers.c \
 	utils/interrupt_char.c \
 	utils/pyexec.c \
-    memzip/memzip.c \
 	libc/string0.c \
 	mp-readline/readline.c \
 	)
@@ -133,7 +132,7 @@ OBJ += $(PY_O)
 OBJ += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIB:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
-OBJ += $(BUILD)/memzip-files.o
+
 
 all: $(FIRMWARE).bin
 

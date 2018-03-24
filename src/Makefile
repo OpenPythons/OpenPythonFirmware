@@ -39,8 +39,13 @@ SRC_C = \
 	main.c \
 	help.c \
 	mphalport.c \
-	modutime.c \
 	modmachine.c \
+	moduos.c \
+	modutime.c \
+
+SRC_EXTMOD = $(addprefix extmod/,\
+    vfs.c \
+    )
 
 SRC_LIB = $(addprefix lib/,\
 	utils/stdout_helpers.c \

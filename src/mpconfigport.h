@@ -84,7 +84,7 @@
 #define MICROPY_USE_INTERNAL_PRINTF (1)
 #define MICROPY_ENABLE_SCHEDULER (1)
 #define MICROPY_SCHEDULER_DEPTH (4)
-#define MICROPY_VFS (0)
+#define MICROPY_VFS (1)
 
 // Fine control over Python builtins, classes, modules, etc
 #define MICROPY_MULTIPLE_INHERITANCE (1)
@@ -205,6 +205,9 @@ typedef long mp_off_t;
 #define MICROPY_HW_BOARD_NAME "umport"
 #define MICROPY_HW_MCU_NAME "Cortex-M4"
 
+#define mp_builtin_open mp_vfs_open
+#define mp_builtin_open_obj mp_vfs_open_obj
+
 #define MP_STATE_PORT MP_STATE_VM
 #define MP_SSIZE_MAX (0x7fffffff)
 #define MP_NEED_LOG2 (1)
@@ -218,12 +221,18 @@ typedef long mp_off_t;
 #define MICROPY_PORT_ROOT_POINTERS \
     const char *readline_hist[8];
 
+extern const struct _mp_obj_module_t mp_module_uos;
 extern const struct _mp_obj_module_t mp_module_utime;
 extern const struct _mp_obj_module_t mp_module_machine;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
+    { MP_ROM_QSTR(MP_QSTR_uos), MP_ROM_PTR(&mp_module_uos) }, \
     { MP_ROM_QSTR(MP_QSTR_utime), MP_ROM_PTR(&mp_module_utime) }, \
-    { MP_ROM_QSTR(MP_QSTR_machine), MP_ROM_PTR(&mp_module_machine) },
+    { MP_ROM_QSTR(MP_QSTR_machine), MP_ROM_PTR(&mp_module_machine) }, \
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_time), (mp_obj_t)&mp_module_utime },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_os), (mp_obj_t)&mp_module_uos }, \
+    { MP_OBJ_NEW_QSTR(MP_QSTR_time), (mp_obj_t)&mp_module_utime }, \
+
+#if 0
+#endif

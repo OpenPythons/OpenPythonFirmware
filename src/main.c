@@ -10,6 +10,7 @@
 #include "py/gc.h"
 #include "py/mperrno.h"
 #include "py/mphal.h"
+#include "extmod/vfs.h"
 #include "lib/utils/interrupt_char.h"
 #include "lib/utils/pyexec.h"
 #include "umport_mcu.h"

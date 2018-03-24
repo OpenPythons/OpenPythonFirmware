@@ -14,14 +14,7 @@ typedef struct _umport_controller_t {
 #define UMPORT_CONTROLLER ((umport_controller_t*)0x40000100)
 
 
-typedef struct _gpio_t {
-    volatile uint32_t ODR;
-    volatile uint32_t IDR;
-} gpio_t;
 
-#define GPIO ((gpio_t*)0x40000200)
-#define GPIO_X ((gpio_t*)0x40000208)
-#define GPIO_Y ((gpio_t*)0x40000210)
 
 
 typedef struct _rtc_t {

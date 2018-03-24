@@ -35,7 +35,6 @@ LIBS = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 CFLAGS += -fdata-sections -ffunction-sections
 LDFLAGS += --gc-sections
 
-MEMZIP_DIR = "memzip"
 
 SRC_C = \
 	main.c \
@@ -140,30 +139,6 @@ OBJ += $(addprefix $(BUILD)/, $(SRC_EXTMOD:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIB:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
 OBJ += $(BUILD)/memzip-files.o
-
-MEMZIP_MPY_DIR = $(BUILD)/memzip
-SRC_MEMZIP = $(shell find $(MEMZIP_DIR) -name '*.py')
-SRC_MEMZIP_MPY = $(addprefix $(BUILD)/, $(SRC_MEMZIP:.py=.mpy))
-
-MAKE_MEMZIP = $(TOP)/lib/memzip/make-memzip.py
-
-TOOL_MPY_CROSS = $(TOP)/mpy-cross/mpy-cross
-
-$(TOOL_MPY_CROSS):
-	cd $(TOP)/mpy-cross && $(MAKE) mpy-cross
-
-$(MEMZIP_MPY_DIR):
-	mkdir -p $@
-
-$(SRC_MEMZIP_MPY): $(SRC_MEMZIP) $(MEMZIP_MPY_DIR) $(TOOL_MPY_CROSS)
-	$(TOOL_MPY_CROSS) $(SRC_MEMZIP) -o $(SRC_MEMZIP_MPY) -X emit=bytecode
-
-$(BUILD)/memzip-files.o: $(BUILD)/memzip-files.c
-	$(call compile_c)
-
-$(BUILD)/memzip-files.c: $(SRC_MEMZIP_MPY)
-	@$(ECHO) "Creating $@"
-	$(Q)$(PYTHON) $(MAKE_MEMZIP) --zip-file $(BUILD)/memzip-files.zip --c-file $@ $(MEMZIP_MPY_DIR)
 
 all: $(FIRMWARE).bin
 

@@ -50,8 +50,6 @@ int main(int argc, char **argv) {
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
         mp_obj_list_init(mp_sys_argv, 0);
 
-        do_str("for i in range(1):pass", MP_PARSE_FILE_INPUT);
-
         for (;;) {
             if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
                 if (pyexec_raw_repl() != 0) {

@@ -1,12 +1,12 @@
-# Select the configuration to build with, defaulting to "minimal"
-
-BUILD = build
-FIRMWARE = $(BUILD)/firmware
-
 include ../micropython/py/mkenv.mk
 
 # qstr definitions (must come before including py.mk)
 QSTR_DEFS = qstrdefsport.h
+
+FROZEN_MPY_DIR = modules
+
+BUILD = build
+FIRMWARE = $(BUILD)/firmware
 
 # include py core make definitions
 include $(TOP)/py/py.mk
@@ -43,10 +43,6 @@ SRC_C = \
 	modmachine.c \
 	moduos.c \
 	modutime.c \
-
-SRC_EXTMOD = $(addprefix extmod/,\
-    vfs.c \
-    )
 
 SRC_LIB = $(addprefix lib/,\
 	utils/stdout_helpers.c \
@@ -135,7 +131,6 @@ SRC_QSTR += $(SRC_C)
 OBJ =
 OBJ += $(PY_O)
 OBJ += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
-OBJ += $(addprefix $(BUILD)/, $(SRC_EXTMOD:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIB:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
 OBJ += $(BUILD)/memzip-files.o

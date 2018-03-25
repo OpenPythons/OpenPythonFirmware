@@ -26,7 +26,7 @@
 #define MICROPY_ENABLE_COMPILER (1)
 #define MICROPY_DYNAMIC_COMPILER (1)
 #define MICROPY_COMP_CONST_FOLDING (1)
-#define MICROPY_COMP_MODULE_CONST (0)
+#define MICROPY_COMP_MODULE_CONST (1)
 #define MICROPY_COMP_CONST (1)
 #define MICROPY_COMP_DOUBLE_TUPLE_ASSIGN (1)
 #define MICROPY_COMP_TRIPLE_TUPLE_ASSIGN (1)
@@ -40,7 +40,7 @@
 // Optimisations
 #define MICROPY_OPT_COMPUTED_GOTO (1)
 #define MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE (0)
-#define MICROPY_OPT_MPZ_BITWISE (0)
+#define MICROPY_OPT_MPZ_BITWISE (1)
 
 // Python internal features
 #define MICROPY_ENABLE_EXTERNAL_IMPORT (1)
@@ -193,28 +193,25 @@
 #define UINT_FMT "%u"
 #define INT_FMT "%d"
 
-// Custom Area //
+// Machine settings
+#define MICROPY_HW_BOARD_NAME "umport"
+#define MICROPY_HW_MCU_NAME "Cortex-M4"
+
+#define MP_SSIZE_MAX (0x7fffffff)
+#define MP_NEED_LOG2 (1)
+
 typedef int mp_int_t; // must be pointer size
 typedef unsigned mp_uint_t; // must be pointer size
 typedef long mp_off_t;
 
 #define MP_PLAT_PRINT_STRN(str, len) mp_hal_stdout_tx_strn_cooked(str, len)
-
+#define MICROPY_QSTR_EXTRA_POOL mp_qstr_frozen_const_pool
 #include <alloca.h>
 
-#define MICROPY_HW_BOARD_NAME "umport"
-#define MICROPY_HW_MCU_NAME "Cortex-M4"
 
-#define mp_builtin_open mp_vfs_open
-#define mp_builtin_open_obj mp_vfs_open_obj
-
+// Builtins
 #define MP_STATE_PORT MP_STATE_VM
-#define MP_SSIZE_MAX (0x7fffffff)
-#define MP_NEED_LOG2 (1)
 
-#define MICROPY_QSTR_EXTRA_POOL mp_qstr_frozen_const_pool
-
-// Hooks for a port to add builtins
 #define MICROPY_PORT_BUILTINS \
     { MP_OBJ_NEW_QSTR(MP_QSTR_open), (mp_obj_t)&mp_builtin_open_obj },
 
@@ -223,6 +220,11 @@ typedef long mp_off_t;
 #define MICROPY_PORT_ROOT_POINTERS \
     const char *readline_hist[8];
 
+#define mp_builtin_open mp_vfs_open
+#define mp_builtin_open_obj mp_vfs_open_obj
+
+
+// Modules
 extern const struct _mp_obj_module_t mp_module_machine;
 extern const struct _mp_obj_module_t mp_module_uos;
 extern const struct _mp_obj_module_t mp_module_utime;

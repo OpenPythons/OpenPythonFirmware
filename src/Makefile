@@ -44,6 +44,8 @@ SRC_C = \
 	moduos.c \
 	modutime.c \
 	modusystem.c \
+	svcfunc.c \
+
 
 SRC_S = \
 	gchelper.s \

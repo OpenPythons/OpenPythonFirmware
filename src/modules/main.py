@@ -7,4 +7,3 @@ def syscall(*args):
     return usystem.syscall(buf)
 
 print(syscall())
-

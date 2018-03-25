@@ -1,9 +1,4 @@
-import ujson
-import usystem
+from system import syscall
 
-def syscall(*args):
-    buf = ujson.dumps(args)
-    usystem.example("?")
-    return usystem.syscall(buf)
-
-print(syscall())
+print(syscall("hello", "world!"))
+print(syscall(1, 2, 3))

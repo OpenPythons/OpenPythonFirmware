@@ -103,12 +103,12 @@ void MP_WEAK __assert_func(const char *file, int line, const char *func, const c
 
 // this is a minimal IRQ and reset framework for any Cortex-M CPU
 
-extern uint32_t _sidata, _sdata, _edata, _sbss, _ebss;
+extern uint32_t _sidata, _sdata, _edata, _sbss, _ebss, _estack;
 
 void Reset_Handler(void) __attribute__((naked));
 void Reset_Handler(void) {
     // set stack pointer
-    __asm volatile ("ldr r0, =0x08000000");
+    __asm volatile ("ldr r0, =_svec");
     __asm volatile ("ldr sp, [r0]");
     // copy .data section from flash to RAM
     for (uint32_t *src = &_sidata, *dest = &_sdata; dest < &_edata;) {
@@ -134,7 +134,7 @@ void Default_Handler(void) {
 }
 
 const uint32_t isr_vector[] __attribute__((section(".isr_vector"))) = {
-    0, // will be set dynamically
+    (uint32_t)&_estack,
     (uint32_t)&Reset_Handler,
     (uint32_t)&Default_Handler, // NMI_Handler
     (uint32_t)&Default_Handler, // HardFault_Handler

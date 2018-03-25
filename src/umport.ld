@@ -1,13 +1,14 @@
 /* Specify the memory areas */
 MEMORY
 {
-    FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 1024K
-    RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 256K
+    FLASH (rx)     : ORIGIN = 0x08000000, LENGTH = 1024K
+    SRAM (rw)      : ORIGIN = 0x20000000, LENGTH = 256K
+    STACK (rw)     : ORIGIN = 0x3FFF0000, LENGTH = 64K
 }
  
 /* top end of the stack */
-/* this is dynamically configured and the correct value is at 0x08000000 */
-/* _estack = ORIGIN(RAM) + LENGTH(RAM); */
+/* the correct value is at 0x08000000 */
+_estack = ORIGIN(SRAM) + LENGTH(SRAM);
 
 /* define output sections */
 SECTIONS
@@ -16,6 +17,7 @@ SECTIONS
     .text :
     {
         . = ALIGN(4);
+        _svec = .;
         KEEP(*(.isr_vector)) /* isr vector table */
         *(.text)           /* .text sections (code) */
         *(.text*)          /* .text* sections (code) */
@@ -40,7 +42,7 @@ SECTIONS
 
         . = ALIGN(4);
         _edata = .;        /* define a global symbol at data end; used by startup code in order to initialise the .data section in RAM */
-    } >RAM
+    } >SRAM
             
     /* Uninitialized data section */
     .bss :
@@ -53,7 +55,7 @@ SECTIONS
 
         . = ALIGN(4);
         _ebss = .;         /* define a global symbol at bss end; used by startup code */
-    } >RAM
+    } >SRAM
 
     .ARM.attributes 0 : { *(.ARM.attributes) }
 }

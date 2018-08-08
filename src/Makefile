@@ -28,7 +28,7 @@ else
 CFLAGS += -Os -DNDEBUG
 endif
 
-LDFLAGS = -nostdlib -T umport.ld -Map=$@.map --cref
+LDFLAGS = -nostdlib -T openpie.ld -Map=$@.map --cref
 LIBS = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 
 # Remove uncalled code from the final image.

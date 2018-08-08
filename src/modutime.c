@@ -6,7 +6,7 @@
 #include "py/obj.h"
 #include "lib/timeutils/timeutils.h"
 #include "extmod/utime_mphal.h"
-#include "umport_mcu.h"
+#include "openpie_mcu.h"
 
 STATIC const mp_rom_map_elem_t time_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_utime) },

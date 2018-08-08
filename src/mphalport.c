@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "py/runtime.h"
-#include "umport_mcu.h"
+#include "openpie_mcu.h"
 #include "mphalport.h"
 
 int mp_hal_stdin_rx_chr(void) {
@@ -22,7 +22,7 @@ void mp_hal_delay_ms(mp_uint_t ms) {
     extern void mp_handle_pending(void);
     while (mp_hal_ticks_ms() - start < ms) {
         mp_handle_pending();
-        UMPORT_CONTROLLER->IDLE = 1;
+        OPENPIE_CONTROLLER->IDLE = 1;
     }
 }
 
@@ -42,5 +42,5 @@ mp_uint_t mp_hal_ticks_ms(void) {
 }
 
 mp_uint_t mp_hal_ticks_cpu(void) {
-    return UMPORT_CONTROLLER->INSNS;
+    return OPENPIE_CONTROLLER->INSNS;
 }

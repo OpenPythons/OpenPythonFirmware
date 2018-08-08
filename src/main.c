@@ -14,10 +14,10 @@
 #include "extmod/vfs.h"
 #include "lib/utils/interrupt_char.h"
 #include "lib/utils/pyexec.h"
-#include "umport_mcu.h"
+#include "openpie_mcu.h"
 #include <math.h>
 
-#define UMPORT_DEBUG(s) (mp_hal_stdout_tx_strn((s), strlen((s))));
+#define OPENPIE_DEBUG(s) (mp_hal_stdout_tx_strn((s), strlen((s))));
 
 mp_uint_t gc_helper_get_regs_and_sp(mp_uint_t *regs);
 
@@ -41,11 +41,11 @@ int main(int argc, char **argv) {
 
     // Stack limit should be less than real stack size, so we have a chance
     // to recover from limit hit.  (Limit is measured in bytes.)
-    mp_stack_set_top((uint8_t*)&_sdata + UMPORT_CONTROLLER->RAM_SIZE);
-    mp_stack_set_limit(UMPORT_CONTROLLER->STACK_SIZE - 1024);
+    mp_stack_set_top((uint8_t*)&_sdata + OPENPIE_CONTROLLER->RAM_SIZE);
+    mp_stack_set_limit(OPENPIE_CONTROLLER->STACK_SIZE - 1024);
 
     while (true) {
-        gc_init(&_ebss, (uint8_t*)&_sdata + UMPORT_CONTROLLER->RAM_SIZE - UMPORT_CONTROLLER->STACK_SIZE);
+        gc_init(&_ebss, (uint8_t*)&_sdata + OPENPIE_CONTROLLER->RAM_SIZE - OPENPIE_CONTROLLER->STACK_SIZE);
         mp_init();
         mp_obj_list_init(mp_sys_path, 0);
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
@@ -119,9 +119,9 @@ void Reset_Handler(void) {
         *dest++ = 0;
     }
 
-    UMPORT_CONTROLLER->PENDING = (uint32_t) &MP_STATE_VM(mp_pending_exception);
-    UMPORT_CONTROLLER->EXCEPTION = (uint32_t) &MP_STATE_VM(mp_kbd_exception);
-    UMPORT_CONTROLLER->INTR_CHAR = (uint32_t) &mp_interrupt_char;
+    OPENPIE_CONTROLLER->PENDING = (uint32_t) &MP_STATE_VM(mp_pending_exception);
+    OPENPIE_CONTROLLER->EXCEPTION = (uint32_t) &MP_STATE_VM(mp_kbd_exception);
+    OPENPIE_CONTROLLER->INTR_CHAR = (uint32_t) &mp_interrupt_char;
 
     // jump to board initialisation
     void _start(void);

@@ -121,7 +121,7 @@
 #define MICROPY_PY_BUILTINS_MIN_MAX (1)
 #define MICROPY_PY_BUILTINS_POW3 (1)
 #define MICROPY_PY_BUILTINS_HELP (1)
-#define MICROPY_PY_BUILTINS_HELP_TEXT umport_help_text
+#define MICROPY_PY_BUILTINS_HELP_TEXT openpie_help_text
 #define MICROPY_PY_BUILTINS_HELP_MODULES (1)
 #define MICROPY_PY___FILE__ (1)
 #define MICROPY_PY_MICROPYTHON_MEM_INFO (1)
@@ -194,7 +194,7 @@
 #define INT_FMT "%d"
 
 // Machine settings
-#define MICROPY_HW_BOARD_NAME "umport"
+#define MICROPY_HW_BOARD_NAME "openpie"
 #define MICROPY_HW_MCU_NAME "Cortex-M4"
 
 #define MP_SSIZE_MAX (0x7fffffff)

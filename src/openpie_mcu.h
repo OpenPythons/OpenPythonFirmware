@@ -14,7 +14,6 @@ typedef struct _openpie_controller_t {
     volatile uint32_t EXCEPTION;
     volatile uint32_t INTR_CHAR;
     volatile uint32_t RAM_SIZE;
-    volatile uint32_t STACK_SIZE;
     volatile uint32_t IDLE;
     volatile uint32_t INSNS;
 } openpie_controller_t;

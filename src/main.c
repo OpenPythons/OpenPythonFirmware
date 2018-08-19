@@ -15,6 +15,7 @@
 #include "lib/utils/interrupt_char.h"
 #include "lib/utils/pyexec.h"
 #include "openpie_mcu.h"
+#include "gccollect.h"
 #include <math.h>
 
 #define OPENPIE_DEBUG(s) (mp_hal_stdout_tx_strn((s), strlen((s))));
@@ -36,16 +37,13 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
 }
 
 int main(int argc, char **argv) {
-    extern uint32_t _ebss;
-    extern uint32_t _sdata;
-
     // Stack limit should be less than real stack size, so we have a chance
     // to recover from limit hit.  (Limit is measured in bytes.)
-    mp_stack_set_top((uint8_t*)&_sdata + OPENPIE_CONTROLLER->RAM_SIZE);
-    mp_stack_set_limit(OPENPIE_CONTROLLER->STACK_SIZE - 1024);
+    mp_stack_set_top((uint8_t*)&_estack);
+    mp_stack_set_limit(_estack - _sstack - 1024);
 
     while (true) {
-        gc_init(&_ebss, (uint8_t*)&_sdata + OPENPIE_CONTROLLER->RAM_SIZE - OPENPIE_CONTROLLER->STACK_SIZE);
+        gc_init(&_ram_start, &_ram_end);
         mp_init();
         mp_obj_list_init(mp_sys_path, 0);
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
@@ -74,18 +72,6 @@ mp_import_stat_t mp_import_stat(const char *path) {
     return mp_vfs_import_stat(path);
 }
 
-void gc_collect(void) {
-    gc_collect_start();
-
-    // get the registers and the sp
-    mp_uint_t regs[10];
-    mp_uint_t sp = gc_helper_get_regs_and_sp(regs);
-
-    gc_collect_root((void**)sp, ((mp_uint_t)MP_STATE_THREAD(stack_top) - (mp_uint_t)sp) / sizeof(mp_uint_t));
-
-    gc_collect_end();
-}
-
 void nlr_jump_fail(void *val) {
     while (1);
 }
@@ -103,13 +89,12 @@ void MP_WEAK __assert_func(const char *file, int line, const char *func, const c
 
 // this is a minimal IRQ and reset framework for any Cortex-M CPU
 
-extern uint32_t _sidata, _sdata, _edata, _sbss, _ebss, _estack;
-
 void Reset_Handler(void) __attribute__((naked));
 void Reset_Handler(void) {
     // set stack pointer
     __asm volatile ("ldr r0, =_svec");
-    __asm volatile ("ldr sp, [r0]");
+    __asm volatile ("ldr r1, [r0]");
+    __asm volatile ("mov sp, r1");
     // copy .data section from flash to RAM
     for (uint32_t *src = &_sidata, *dest = &_sdata; dest < &_edata;) {
         *dest++ = *src++;

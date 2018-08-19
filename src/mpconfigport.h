@@ -195,7 +195,7 @@
 
 // Machine settings
 #define MICROPY_HW_BOARD_NAME "openpie"
-#define MICROPY_HW_MCU_NAME "Cortex-M4"
+#define MICROPY_HW_MCU_NAME "Cortex-M0"
 
 #define MP_SSIZE_MAX (0x7fffffff)
 #define MP_NEED_LOG2 (1)

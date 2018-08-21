@@ -3,6 +3,7 @@ include ../micropython/py/mkenv.mk
 # qstr definitions (must come before including py.mk)
 QSTR_DEFS = qstrdefsport.h
 
+FROZEN_DIR = scripts
 FROZEN_MPY_DIR = modules
 
 BUILD = build

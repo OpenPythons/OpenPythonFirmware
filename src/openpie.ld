@@ -6,13 +6,13 @@
 MEMORY
 {
     FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 256K
-    SRAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 64K
-    RAM (xrw)      : ORIGIN = 0x60000000, LENGTH = 128K
+    SRAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 32K
+    RAM (xrw)       : ORIGIN = 0x60000000, LENGTH = 160K
 }
 
 /* produce a link error if there is not this amount of SRAM/RAM for these sections */
-_minimum_stack_size = 63K;
-_minimum_heap_size = 128K;
+_minimum_stack_size = 8K;
+_minimum_heap_size = 160K;
 
 /* Define tho top end of the stack.  The stack is full descending so begins just
    above last byte of SRAM.  Note that EABI requires the stack to be 8-byte

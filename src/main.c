@@ -42,6 +42,11 @@ int main(int argc, char **argv) {
     mp_stack_set_top((uint8_t*)&_estack);
     mp_stack_set_limit(_estack - _sstack - 1024);
 
+    #if MICROPY_ENABLE_PYSTACK
+    static mp_obj_t pystack[4096];
+    mp_pystack_init(&pystack, &pystack[MP_ARRAY_SIZE(pystack)]);
+    #endif
+
     while (true) {
         gc_init(&_ram_start, &_ram_end);
         mp_init();

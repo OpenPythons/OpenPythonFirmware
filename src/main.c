@@ -65,8 +65,8 @@ int main(int argc, char **argv) {
                 }
             }
         }
+
         mp_deinit();
-        printf("PYB: soft reboot\n");
     }
     return 0;
 }
@@ -98,6 +98,7 @@ void Reset_Handler(void) {
     __asm volatile ("ldr r0, =_svec");
     __asm volatile ("ldr r1, [r0]");
     __asm volatile ("mov sp, r1");
+
     // copy .data section from flash to RAM
     for (uint32_t *src = &_sidata, *dest = &_sdata; dest < &_edata;) {
         *dest++ = *src++;

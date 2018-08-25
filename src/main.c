@@ -125,11 +125,6 @@ const uint32_t startup_vector[] __attribute__((section(".startup"))) = {
 void _start(void) {
     // when we get here: stack is initialised, bss is clear, data is copied
 
-    // SCB->CCR: enable 8-byte stack alignment for IRQ handlers, in accord with EABI
-    //*((volatile uint32_t*)0xe000ed14) |= 1 << 9;
-
-    // initialise the cpu and peripherals
-
     // now that we have a basic system up and running we can call main
     main(0, NULL);
 

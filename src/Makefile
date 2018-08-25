@@ -153,6 +153,6 @@ $(FIRMWARE).elf: $(OBJ)
 	$(Q)$(SIZE) $@
 
 $(FIRMWARE).bin: $(FIRMWARE).elf
-	$(Q)$(OBJCOPY) -O binary -j .isr_vector -j .text -j .data $^ $@
+	$(Q)$(OBJCOPY) -O binary -j .startup -j .text -j .data $^ $@
 
 include $(TOP)/py/mkrules.mk

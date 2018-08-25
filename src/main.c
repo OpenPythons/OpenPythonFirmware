@@ -118,28 +118,10 @@ void Reset_Handler(void) {
     _start();
 }
 
-void Default_Handler(void) {
-    for (;;) {
-    }
-}
-
-const uint32_t isr_vector[] __attribute__((section(".isr_vector"))) = {
+const uint32_t startup_vector[] __attribute__((section(".startup"))) = {
     (uint32_t)&_estack,
     (uint32_t)&Reset_Handler,
-    (uint32_t)&Default_Handler, // NMI_Handler
-    (uint32_t)&Default_Handler, // HardFault_Handler
-    (uint32_t)&Default_Handler, // MemManage_Handler
-    (uint32_t)&Default_Handler, // BusFault_Handler
-    (uint32_t)&Default_Handler, // UsageFault_Handler
-    0,
-    0,
-    0,
-    0,
-    (uint32_t)&Default_Handler, // SVC_Handler
-    (uint32_t)&Default_Handler, // DebugMon_Handler
-    0,
-    (uint32_t)&Default_Handler, // PendSV_Handler
-    (uint32_t)&Default_Handler, // SysTick_Handler
+    // TODO: add custom handler for detect failure (or just turn off computer?)
 };
 
 void _start(void) {

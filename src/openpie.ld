@@ -26,10 +26,9 @@ _sram_end = ORIGIN(SRAM) + LENGTH(SRAM);
 _ram_start = ORIGIN(RAM); /* heap starts just after statically allocated memory */
 _ram_end = ORIGIN(RAM) + LENGTH(RAM);
 
-
 /* Memory layout for basic configuration:
 
-    FLASH       .isr_vector
+    FLASH       .startup
     FLASH       .text
     FLASH       .data
 
@@ -46,11 +45,11 @@ ENTRY(Reset_Handler)
 SECTIONS
 {
     /* The startup code goes first into FLASH */
-    .isr_vector :
+    .startup :
     {
         . = ALIGN(4);
         _svec = .;
-        KEEP(*(.isr_vector)) /* Startup code */
+        KEEP(*(.startup)) /* Startup code */
 
         . = ALIGN(4);
     } >FLASH

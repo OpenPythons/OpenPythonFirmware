@@ -23,7 +23,6 @@ typedef struct _openpie_controller_t {
 
 typedef struct _rtc_t {
     volatile uint32_t TICKS_MS;
-    volatile uint32_t TICKS_US;
 } rtc_t;
 
 #define RTC ((rtc_t*)0x40000300)

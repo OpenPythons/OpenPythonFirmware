@@ -6,8 +6,8 @@
 MEMORY
 {
     FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 256K
-    SRAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 32K
-    RAM (xrw)       : ORIGIN = 0x60000000, LENGTH = 160K
+    SRAM (rw)       : ORIGIN = 0x20000000, LENGTH = 32K
+    RAM (rw)        : ORIGIN = 0x60000000, LENGTH = 160K
 }
 
 /* produce a link error if there is not this amount of SRAM/RAM for these sections */

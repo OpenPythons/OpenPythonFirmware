@@ -17,7 +17,6 @@ _minimum_heap_size = 160K;
 /* Define tho top end of the stack.  The stack is full descending so begins just
    above last byte of SRAM.  Note that EABI requires the stack to be 8-byte
    aligned for a call. */
-_sstack = _ebss;
 _estack = ORIGIN(SRAM) + LENGTH(SRAM);
 
 /* RAM extents for the garbage collector */

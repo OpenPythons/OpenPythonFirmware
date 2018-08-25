@@ -11,7 +11,7 @@ MEMORY
 }
 
 /* produce a link error if there is not this amount of SRAM/RAM for these sections */
-_minimum_stack_size = 8K;
+_minimum_stack_size = 4K;
 _minimum_heap_size = 160K;
 
 /* Define tho top end of the stack.  The stack is full descending so begins just

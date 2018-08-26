@@ -32,8 +32,6 @@
 #include "py/mpthread.h"
 #include "gccollect.h"
 
-uintptr_t gc_helper_get_regs_and_sp(uintptr_t *regs);
-
 void gc_collect(void) {
     // start the GC
     gc_collect_start();

@@ -12,7 +12,8 @@ FIRMWARE = $(BUILD)/firmware
 # include py core make definitions
 include $(TOP)/py/py.mk
 
-CROSS_COMPILE = arm-none-eabi-
+CROSS_COMPILE = /opt/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-
+# CROSS_COMPILE = arm-none-eabi-
 
 INC += -I.
 INC += -I$(TOP)
@@ -48,13 +49,13 @@ SRC_C = \
 	moduos.c \
 	modutime.c \
 	modusystem.c \
-	svcfunc.c \
 	gccollect.c \
 
 SRC_S = \
 	gchelper_m0.s \
 
 SRC_LIB = $(addprefix lib/,\
+	utils/sys_stdio_mphal.c \
 	utils/stdout_helpers.c \
 	utils/interrupt_char.c \
 	utils/pyexec.c \
@@ -135,7 +136,7 @@ SRC_LIBM = $(addprefix lib/libm/,\
 	wf_tgamma.c \
 	)
 
-SRC_QSTR += $(SRC_C)
+SRC_QSTR += $(SRC_C) $(SRC_LIB)
 
 OBJ =
 OBJ += $(PY_O)

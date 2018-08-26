@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include "py/nlr.h"
 #include "py/compile.h"
@@ -11,16 +12,13 @@
 #include "py/mperrno.h"
 #include "py/mphal.h"
 #include "py/lexer.h"
-#include "extmod/vfs.h"
+#include "py/objstr.h"
 #include "lib/utils/interrupt_char.h"
 #include "lib/utils/pyexec.h"
-#include "openpie_mcu.h"
+#include "extmod/vfs.h"
 #include "gccollect.h"
-#include <math.h>
-
-#define OPENPIE_DEBUG(s) (mp_hal_stdout_tx_strn((s), strlen((s))));
-
-mp_uint_t gc_helper_get_regs_and_sp(mp_uint_t *regs);
+#include "openpie_mcu.h"
+#include "svc.h"
 
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;
@@ -37,12 +35,13 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
 }
 
 int main(int argc, char **argv) {
-    while (true) {
+    nlr_buf_t nlr;
+    if (nlr_push(&nlr) == 0) {
         mp_stack_set_top((uint8_t*)&_estack);
         mp_stack_set_limit(&_estack - &_ebss - 512);
 
         #if MICROPY_ENABLE_PYSTACK
-        static mp_obj_t pystack[4096];
+        static mp_obj_t pystack[10000];
         mp_pystack_init(&pystack, &pystack[MP_ARRAY_SIZE(pystack)]);
         #endif
 
@@ -51,8 +50,8 @@ int main(int argc, char **argv) {
         mp_obj_list_init(mp_sys_path, 0);
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
         mp_obj_list_init(mp_sys_argv, 0);
-
-        do_str("from main import *", MP_PARSE_FILE_INPUT);
+        pyexec_frozen_module("_boot.py");
+        pyexec_file("boot.py");
 
         for (;;) {
             if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
@@ -65,9 +64,12 @@ int main(int argc, char **argv) {
                 }
             }
         }
-
+    } else {
+        // uncaught exception
+        mp_obj_print_exception(&mp_plat_print, (mp_obj_t)nlr.ret_val);
         mp_deinit();
     }
+
     return 0;
 }
 
@@ -117,9 +119,34 @@ void Reset_Handler(void) {
     _start();
 }
 
+void Signal_Handler(const byte *buf, size_t len) {
+    SVC_FUNCTION_START;
+    mp_obj_t signal_buf = mp_obj_new_str_copy(&mp_type_str, buf, len);
+    mp_obj_t handler = mp_obj_dict_get(
+        MP_OBJ_FROM_PTR(&MP_STATE_VM(dict_main)),
+        MP_OBJ_NEW_QSTR(MP_QSTR_signal_handler)
+    );
+
+    mp_sched_schedule(handler, signal_buf);
+    SVC_CALL(0);
+}
+
+void Print_Handler() {
+    SVC_FUNCTION_START;
+    mp_obj_t handler = mp_obj_dict_get(
+        MP_OBJ_FROM_PTR(&MP_STATE_VM(dict_main)),
+        MP_OBJ_NEW_QSTR(MP_QSTR_print_handler)
+    );
+
+    mp_sched_schedule(handler, mp_const_none);
+    SVC_CALL(0);
+}
+
 const uint32_t startup_vector[] __attribute__((section(".startup"))) = {
     (uint32_t)&_estack,
     (uint32_t)&Reset_Handler,
+    (uint32_t)&Signal_Handler,
+    (uint32_t)&Print_Handler,
     // TODO: add custom handler for detect failure (or just turn off computer?)
 };
 

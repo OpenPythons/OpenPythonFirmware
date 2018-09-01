@@ -22,5 +22,5 @@ def print_hook(func):
     pass
 
 
-def debug(*args):
+def debug(buf):
     pass

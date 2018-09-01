@@ -25,6 +25,7 @@ CFLAGS_MCU_m0 = $(CFLAGS_CORTEX_M) -mtune=cortex-m0 -mcpu=cortex-m0 -mfloat-abi=
 
 CFLAGS = $(INC) -Wall -Werror -std=c99 -nostdlib $(CFLAGS_MCU_m0) $(COPT)
 CFLAGS += -DMP_CONFIGFILE="<mpconfigport.h>"
+CFLAGS += -DMPACK_HAS_CONFIG=1
 
 #Debugging/Optimization
 ifeq ($(DEBUG), 1)
@@ -55,6 +56,15 @@ SRC_S = \
 	gchelper_m0.s \
 
 SRC_LIB = $(addprefix lib/,\
+    mpack/mpack-common.c \
+    mpack/mpack-expect.c \
+    mpack/mpack-node.c \
+    mpack/mpack-platform.c \
+    mpack/mpack-reader.c \
+    mpack/mpack-writer.c \
+    )
+
+SRC_MP_LIB = $(addprefix lib/,\
 	utils/sys_stdio_mphal.c \
 	utils/stdout_helpers.c \
 	utils/interrupt_char.c \
@@ -63,7 +73,7 @@ SRC_LIB = $(addprefix lib/,\
 	mp-readline/readline.c \
 	)
 
-SRC_LIBM_DBL = $(addprefix lib/libm_dbl/,\
+SRC_MP_LIBM_DBL = $(addprefix lib/libm_dbl/,\
 	__cos.c \
 	__expo2.c \
 	__fpclassify.c \
@@ -107,7 +117,7 @@ SRC_LIBM_DBL = $(addprefix lib/libm_dbl/,\
 	trunc.c \
 	)
 
-SRC_LIBM = $(addprefix lib/libm/,\
+SRC_MP_LIBM = $(addprefix lib/libm/,\
 	math.c \
 	acoshf.c \
 	asinfacosf.c \
@@ -136,14 +146,15 @@ SRC_LIBM = $(addprefix lib/libm/,\
 	wf_tgamma.c \
 	)
 
-SRC_QSTR += $(SRC_C) $(SRC_LIB)
+SRC_QSTR += $(SRC_C) $(SRC_MP_LIB)
 
 OBJ =
 OBJ += $(PY_O)
 OBJ += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_S:.s=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIB:.c=.o))
-OBJ += $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
+OBJ += $(addprefix $(BUILD)/, $(SRC_MP_LIB:.c=.o))
+OBJ += $(addprefix $(BUILD)/, $(SRC_MP_LIBM:.c=.o))
 
 
 all: $(FIRMWARE).bin

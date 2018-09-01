@@ -18,7 +18,7 @@
 #include "extmod/vfs.h"
 #include "gccollect.h"
 #include "openpie_mcu.h"
-#include "svc.h"
+#include "syscall_arch.h"
 
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;
@@ -139,7 +139,7 @@ void Print_Handler() {
     );
 
     mp_sched_schedule(handler, mp_const_none);
-    SVC_CALL(0);
+    __syscall0(0);
 }
 
 const uint32_t startup_vector[] __attribute__((section(".startup"))) = {

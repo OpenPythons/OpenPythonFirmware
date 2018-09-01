@@ -1,33 +1,32 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "py/obj.h"
 #include "py/objstr.h"
 #include "mphalport.h"
+#include "openpie_vfs.h"
 #include "openpie_mcu.h"
-#include "svc.h"
-#include <stdio.h>
+#include "syscall_arch.h"
 
-mp_obj_t parse(volatile void **R) {
-    if (R0 != 0) {
-        return mp_obj_new_str_copy(&mp_type_str, (byte *)R0, (size_t)R1);
-    } else {
+typedef struct _openpie_syscall_result_t {
+    byte *buf;
+    size_t len;
+} openpie_syscall_result_t;
+
+#define _debug(s) __syscall2(32, (int)s, (int)strlen(s));
+
+mp_obj_t parse_2(void *ret) {
+    mp_obj_t usystem_debug(mp_obj_t);
+
+    if (ret == NULL) {
         return mp_const_none;
+    } else {
+        openpie_syscall_result_t *result = (openpie_syscall_result_t *)ret;
+        mp_obj_t obj = mp_obj_new_str_copy(&mp_type_str, result->buf, result->len);
+        usystem_debug(obj);
+        return obj;
     }
 }
-
-/*
-int mp_hal_stdin_rx_chr(void) {
-    unsigned char c = 0;
-    c = OPENPIE_IO->RXR;
-    return c;
-}
-
-void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
-    while (len--) {
-        OPENPIE_IO->TXR = *str++;
-    }
-}
-*/
 
 mp_obj_t print_hook = NULL;
 
@@ -40,37 +39,30 @@ MP_DEFINE_CONST_FUN_OBJ_1(usystem_print_hook_obj, usystem_print_hook);
 STATIC mp_obj_t usystem_example(mp_obj_t obj) {
     // size_t len = 0;
     // const char *buf = mp_obj_str_get_data(obj, &len);
-    return MP_OBJ_NEW_SMALL_INT(0);
+    return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(usystem_example_obj, usystem_example);
 
 
 STATIC mp_obj_t usystem_syscall(mp_obj_t obj) {
-    SVC_FUNCTION_START;
     size_t len = 0;
     const char *buf = mp_obj_str_get_data(obj, &len);
-
-    R0 = (void *)buf;
-    R1 = (void *)len;
-    SVC_CALL(1);
-
-    return parse(R);
+    void *result = (void *)__syscall2(1, (int)buf, (int)len);
+    return parse_2(result);
 }
 MP_DEFINE_CONST_FUN_OBJ_1(usystem_syscall_obj, usystem_syscall);
 
 
 STATIC mp_obj_t usystem_signal() {
-    SVC_FUNCTION_START;
-    SVC_CALL(2);
-    return parse(R);
+    void *result = (void *)__syscall0(2);
+    return parse_2(result);
 }
 MP_DEFINE_CONST_FUN_OBJ_0(usystem_signal_obj, usystem_signal);
 
 
 STATIC mp_obj_t usystem_components() {
-    SVC_FUNCTION_START;
-    SVC_CALL(3);
-    return parse(R);
+    void *result = (byte *)__syscall0(3);
+    return parse_2(result);
 }
 MP_DEFINE_CONST_FUN_OBJ_0(usystem_components_obj, usystem_components);
 
@@ -88,26 +80,19 @@ MP_DEFINE_CONST_FUN_OBJ_1(usystem_set_stdin_char_obj, usystem_set_stdin_char);
 
 
 mp_obj_t usystem_get_stdout_str() {
-    SVC_FUNCTION_START;
-    SVC_CALL(31);
-    return parse(R);
+    void *result = (byte *)__syscall0(31);
+    return parse_2(result);
 }
 MP_DEFINE_CONST_FUN_OBJ_0(usystem_get_stdout_str_obj, usystem_get_stdout_str);
 
 
 mp_obj_t usystem_debug(mp_obj_t obj) {
-    SVC_FUNCTION_START;
     size_t len = 0;
     const char *buf = mp_obj_str_get_data(obj, &len);
-
-    R0 = (void *)buf;
-    R1 = (void *)len;
-    SVC_CALL(32);
-
+    (void)__syscall2(32, (int)buf, (int)len);
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_1(usystem_debug_obj, usystem_debug);
-
 
 
 STATIC const mp_rom_map_elem_t usystem_module_globals_table[] = {

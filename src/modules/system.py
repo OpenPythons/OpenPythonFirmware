@@ -1,7 +1,7 @@
 import ujson
 import usystem
 from usystem import debug as _debug
-signals = []
+
 
 def parse(buf):
     return ujson.loads(buf) if buf is not None else buf
@@ -14,7 +14,8 @@ def syscall(*req):
 
 
 def signal():
-    return signals.pop(0) if signals else None
+    res_buf = usystem.signal()
+    return parse(res_buf)
 
 
 def components():

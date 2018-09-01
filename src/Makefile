@@ -51,6 +51,7 @@ SRC_C = \
 	modutime.c \
 	modusystem.c \
 	gccollect.c \
+	openpie_vfs.c \
 
 SRC_S = \
 	gchelper_m0.s \

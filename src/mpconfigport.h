@@ -81,7 +81,7 @@
 #define MICROPY_MODULE_FROZEN_MPY (1)
 #define MICROPY_CAN_OVERRIDE_BUILTINS (1)
 #define MICROPY_BUILTIN_METHOD_CHECK_SELF_ARG (1)
-#define MICROPY_USE_INTERNAL_ERRNO (0)
+#define MICROPY_USE_INTERNAL_ERRNO (1)
 #define MICROPY_USE_INTERNAL_PRINTF (1)
 #define MICROPY_ENABLE_SCHEDULER (1)
 #define MICROPY_SCHEDULER_DEPTH (4)
@@ -141,7 +141,7 @@
 #define MICROPY_PY_GC_COLLECT_RETVAL (1)
 #define MICROPY_PY_IO (1)
 #define MICROPY_PY_IO_RESOURCE_STREAM (1)
-#define MICROPY_PY_IO_FILEIO (0)
+#define MICROPY_PY_IO_FILEIO (1)
 #define MICROPY_PY_IO_BYTESIO (1)
 // MICROPY_PY_IO_BUFFEREDWRITER make error with `unused-variable`
 #define MICROPY_PY_IO_BUFFEREDWRITER (0)
@@ -197,6 +197,7 @@
 // Machine settings
 #define MICROPY_HW_BOARD_NAME "openpie"
 #define MICROPY_HW_MCU_NAME "Cortex-M0"
+#define MICROPY_OPENPIE_VFS (1)
 
 #define MP_SSIZE_MAX (0x7fffffff)
 #define MP_NEED_LOG2 (1)
@@ -221,9 +222,12 @@ typedef long mp_off_t;
 #define MICROPY_PORT_ROOT_POINTERS \
     const char *readline_hist[8];
 
+#define mp_type_fileio mp_type_vfs_openpie_fileio
+#define mp_type_textio mp_type_vfs_openpie_textio
+
+#define mp_import_stat mp_vfs_import_stat
 #define mp_builtin_open mp_vfs_open
 #define mp_builtin_open_obj mp_vfs_open_obj
-
 
 // Modules
 extern const struct _mp_obj_module_t mp_module_machine;

@@ -15,10 +15,12 @@
 #include "py/objstr.h"
 #include "lib/utils/interrupt_char.h"
 #include "lib/utils/pyexec.h"
+#include "lib/mpack/mpack.h"
 #include "extmod/vfs.h"
 #include "gccollect.h"
 #include "openpie_mcu.h"
 #include "syscall_arch.h"
+#include "mpack-config.h"
 
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;
@@ -51,7 +53,7 @@ int main(int argc, char **argv) {
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
         mp_obj_list_init(mp_sys_argv, 0);
         pyexec_frozen_module("_boot.py");
-        pyexec_file("boot.py");
+        // pyexec_file("boot.py");
 
         for (;;) {
             if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
@@ -71,10 +73,6 @@ int main(int argc, char **argv) {
     }
 
     return 0;
-}
-
-mp_import_stat_t mp_import_stat(const char *path) {
-    return mp_vfs_import_stat(path);
 }
 
 void nlr_jump_fail(void *val) {
@@ -119,25 +117,11 @@ void Reset_Handler(void) {
     _start();
 }
 
-void Signal_Handler(const byte *buf, size_t len) {
-    SVC_FUNCTION_START;
-    mp_obj_t signal_buf = mp_obj_new_str_copy(&mp_type_str, buf, len);
+void Signal_Handler() {
     mp_obj_t handler = mp_obj_dict_get(
         MP_OBJ_FROM_PTR(&MP_STATE_VM(dict_main)),
         MP_OBJ_NEW_QSTR(MP_QSTR_signal_handler)
-    );
-
-    mp_sched_schedule(handler, signal_buf);
-    SVC_CALL(0);
-}
-
-void Print_Handler() {
-    SVC_FUNCTION_START;
-    mp_obj_t handler = mp_obj_dict_get(
-        MP_OBJ_FROM_PTR(&MP_STATE_VM(dict_main)),
-        MP_OBJ_NEW_QSTR(MP_QSTR_print_handler)
-    );
-
+    ); // TODO: optimize
     mp_sched_schedule(handler, mp_const_none);
     __syscall0(0);
 }
@@ -146,7 +130,6 @@ const uint32_t startup_vector[] __attribute__((section(".startup"))) = {
     (uint32_t)&_estack,
     (uint32_t)&Reset_Handler,
     (uint32_t)&Signal_Handler,
-    (uint32_t)&Print_Handler,
     // TODO: add custom handler for detect failure (or just turn off computer?)
 };
 

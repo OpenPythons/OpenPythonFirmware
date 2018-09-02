@@ -15,7 +15,9 @@
 #define MPACK_STRINGS 1
 
 #if MICROPY_ENABLE_GC
+
 #include "py/gc.h"
+
 #define MPACK_MALLOC(b) gc_alloc(b, false)
 #define MPACK_REALLOC(ptr, n) gc_realloc(ptr, n, true)
 #define MPACK_FREE(ptr) gc_free(ptr)

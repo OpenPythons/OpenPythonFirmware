@@ -18,8 +18,8 @@ int mp_hal_stdin_rx_chr(void) {
 void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
     mp_obj_t signal_buf = mp_obj_new_str(str, len);
     mp_obj_t handler = mp_obj_dict_get(
-        MP_OBJ_FROM_PTR(&MP_STATE_VM(dict_main)),
-        MP_OBJ_NEW_QSTR(MP_QSTR_print_handler)
+            MP_OBJ_FROM_PTR(&MP_STATE_VM(dict_main)),
+            MP_OBJ_NEW_QSTR(MP_QSTR_print_handler)
     );
 
     mp_call_function_1_protected(handler, signal_buf);

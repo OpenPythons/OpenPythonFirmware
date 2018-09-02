@@ -208,6 +208,7 @@ typedef long mp_off_t;
 
 #define MP_PLAT_PRINT_STRN(str, len) mp_hal_stdout_tx_strn_cooked(str, len)
 #define MICROPY_QSTR_EXTRA_POOL mp_qstr_frozen_const_pool
+
 #include <alloca.h>
 
 

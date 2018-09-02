@@ -45,6 +45,7 @@ LDFLAGS += --gc-sections
 SRC_C = \
 	main.c \
 	help.c \
+	machine.c \
 	mphalport.c \
 	modmachine.c \
 	moduos.c \
@@ -52,6 +53,7 @@ SRC_C = \
 	modusystem.c \
 	gccollect.c \
 	openpie_vfs.c \
+	umsgpack.c \
 
 SRC_S = \
 	gchelper_m0.s \

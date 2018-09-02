@@ -41,21 +41,21 @@ void gc_collect(void) {
     uintptr_t sp = gc_helper_get_regs_and_sp(regs);
 
     // trace the stack, including the registers (since they live on the stack in this function)
-    #if MICROPY_PY_THREAD
+#if MICROPY_PY_THREAD
     gc_collect_root((void**)sp, ((uint32_t)MP_STATE_THREAD(stack_top) - sp) / sizeof(uint32_t));
-    #else
-    gc_collect_root((void**)sp, ((uint32_t)&_estack - sp) / sizeof(uint32_t));
-    #endif
+#else
+    gc_collect_root((void **) sp, ((uint32_t) &_estack - sp) / sizeof(uint32_t));
+#endif
 
     // trace root pointers from any threads
-    #if MICROPY_PY_THREAD
+#if MICROPY_PY_THREAD
     mp_thread_gc_others();
-    #endif
+#endif
 
     // end the GC
     gc_collect_end();
 
-    #if 0
+#if 0
     // print GC info
     gc_info_t info;
     gc_info(&info);
@@ -63,5 +63,5 @@ void gc_collect(void) {
     printf(" " UINT_FMT " total\n", info.total);
     printf(" " UINT_FMT " : " UINT_FMT "\n", info.used, info.free);
     printf(" 1=" UINT_FMT " 2=" UINT_FMT " m=" UINT_FMT "\n", info.num_1block, info.num_2block, info.max_block);
-    #endif
+#endif
 }

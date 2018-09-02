@@ -4,6 +4,7 @@
 typedef struct _openpie_io_t {
     volatile unsigned char TXR;
     volatile unsigned char RXR;
+    volatile unsigned char REDIRECT;
 } openpie_io_t;
 
 #define OPENPIE_IO ((openpie_io_t*)0x40000000)

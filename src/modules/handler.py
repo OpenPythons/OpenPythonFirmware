@@ -1,10 +1,10 @@
 import micropython
 from usystem import signal as pop_signal, set_stdin_char
 
-from component import Component, Monitor
+from component import Component, Monitor, components
 from system import debug, parse
 
-devices = Component.list()
+devices = components()
 gpu = devices["gpu"]
 screen = devices["screen"]
 
@@ -20,7 +20,6 @@ def print_handler(buf):
     except BaseException as e:
         debug("exc", type(e).__name__ + ":" + str(e))
         debug("trace", dir(e))
-
 
 
 def signal_handler(_):
@@ -41,6 +40,7 @@ def signal_handle(_):
             name = signal["name"]  # type: str
             args = signal["args"]  # type: tuple
             if name == "key_down" and len(args) >= 4:
+                # when redirectKeyEvent set then never called
                 _, char, _, _, *_ = args
                 set_stdin_char(int(char))
             elif name == "clipboard" and len(args) >= 3:

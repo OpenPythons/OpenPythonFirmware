@@ -26,8 +26,10 @@ class Command:
 rootfs_address = "f9c77205-4210-4017-b831-cac8fa4f491d"
 
 devices = components()
+for key, value in devices.items():
+    globals()[key] = value
+
 eeprom = devices["eeprom"]
-computer = devices["computer"]
 gpu = devices["gpu"]
 fs = Component(rootfs_address, "filesystem")
 

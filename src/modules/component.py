@@ -1,9 +1,9 @@
-from system import invoke, methods, annotations
-import system
+from machine import invoke, methods, annotations
+import machine
 
 
 def devices():
-    return {value: Component(key, value) for key, value in system.components().items()}
+    return {value: Component(key, value) for key, value in machine.components().items()}
 
 
 class ComponentMethod:

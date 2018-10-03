@@ -3,7 +3,7 @@ import uos
 
 from component import devices, Component
 from handler import monitor
-from system import components
+from machine import components
 from vfs import FileSystem
 
 
@@ -85,6 +85,8 @@ def main():
     uos.mount(FileSystem(rootfs_address), '/')
     if extfs is not None:
         uos.mount(FileSystem(extfs.address), '/opos', readonly=True)
+
+    import opos.example
 
     with open("_bios.py", "w") as fp:
         fp.write("print(32)")

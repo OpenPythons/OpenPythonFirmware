@@ -1,6 +1,8 @@
 #ifndef OPENPIE_MACHINE_H
 #define OPENPIE_MACHINE_H
 
+#include "py/objexcept.h"
+
 int main(int argc, char **argv);
 void _exit(int status);
 

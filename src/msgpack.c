@@ -152,20 +152,20 @@ void msgpack_dump(mpack_writer_t *writer, mp_obj_t obj) {
     } else if (MP_OBJ_IS_FUN(obj)) { // function (error)
         mp_raise_TypeError(NULL);
     } else if (CHECK(mp_type_int)) {
-        int value = MP_OBJ_SMALL_INT_VALUE(obj);
+        int value = mp_obj_get_int_truncated(obj);
         mpack_write_int(writer, value);
-#if MICROPY_FLOAT_IMPL != MICROPY_FLOAT_IMPL_NONE
-        } else if (CHECK(mp_type_float)) {
-            mp_float_t value = mp_obj_float_get(obj);
-
+    } else if (CHECK(mp_type_float)) {
+        mp_float_t value = mp_obj_float_get(obj);
 #if MICROPY_FLOAT_IMPL == MICROPY_FLOAT_IMPL_FLOAT
-            mpack_write_float(writer, value);
+        mpack_write_float(writer, value);
 #elif MICROPY_FLOAT_IMPL == MICROPY_FLOAT_IMPL_DOUBLE
-            mpack_write_double(writer, value);
+        mpack_write_double(writer, value);
 #else
-#error MICROPY_FLOAT_IMPL mismatch
-#endif
-
+    #if MICROPY_FLOAT_IMPL == MICROPY_FLOAT_IMPL_NONE
+        #error MICROPY_FLOAT_IMPL_NONE
+    #else
+        #error MICROPY_FLOAT_IMPL mismatch
+    #endif
 #endif
     } else if (CHECK(mp_type_str)) {
         size_t len;

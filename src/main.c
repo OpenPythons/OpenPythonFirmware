@@ -12,24 +12,11 @@
 #include "gccollect.h"
 #include "machine.h"
 #include "syscall.h"
+
 #define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
 
-void do_str(const char *src, mp_parse_input_kind_t input_kind) {
-    nlr_buf_t nlr;
-    if (nlr_push(&nlr) == 0) {
-        mp_lexer_t *lex = mp_lexer_new_from_str_len(MP_QSTR__lt_stdin_gt_, src, strlen(src), 0);
-        mp_parse_tree_t parse_tree = mp_parse(lex, input_kind);
-        mp_obj_t module_fun = mp_compile(&parse_tree, MP_QSTR__lt_stdin_gt_, MP_EMIT_OPT_NONE, false);
-        mp_call_function_0(module_fun);
-        nlr_pop();
-    } else {
-        // uncaught exception
-        mp_obj_print_exception(&mp_plat_print, (mp_obj_t) nlr.ret_val);
-    }
-}
-
 void debug_printer(void *self, const char *buf, size_t len) {
-    __syscall2(SYS_DEBUG, (int)buf, (int)len);
+    __syscall2(SYS_DEBUG, (int) buf, (int) len);
 }
 
 int main(int argc, char **argv) {
@@ -37,7 +24,7 @@ int main(int argc, char **argv) {
     int code;
 
     if (nlr_push(&nlr) == 0) {
-        mp_stack_set_top((uint8_t *) &_estack);
+        mp_stack_set_top((uint8_t * ) & _estack);
         mp_stack_set_limit(&_estack - &_ebss - 512);
 
 #if MICROPY_ENABLE_PYSTACK
@@ -76,14 +63,12 @@ int main(int argc, char **argv) {
             }
         }
     } else {
-        _debug("invalid")
         if (nlr_push(&nlr) == 0) {
-            // uncaught exception
             mp_print_t print = {NULL, debug_printer};
             mp_obj_print_exception(&print, (mp_obj_t) nlr.ret_val);
             mp_deinit();
         } else {
-            __fatal_error("unexcepted error");
+            __fatal_error("unexpected error");
         }
     }
 

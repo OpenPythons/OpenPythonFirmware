@@ -1,10 +1,13 @@
 #include "py/nlr.h"
 #include "py/runtime.h"
+#include "py/objexcept.h"
 #include "lib/utils/interrupt_char.h"
 #include "gccollect.h"
 #include "openpie_mcu.h"
 #include "machine.h"
 #include "syscall.h"
+
+MP_DEFINE_EXCEPTION(SystemError, Exception)
 
 void _start(void) {
     int status = main(0, NULL);

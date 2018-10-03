@@ -1,8 +1,7 @@
 import micropython
-from usystem import signal as pop_signal, set_stdin_char
+from machine import signal as pop_signal, set_stdin_char, debug
 
 from component import Component, Monitor, devices
-from system import debug
 
 devices = devices()
 gpu = devices["gpu"]
@@ -34,7 +33,7 @@ def signal_handle(_):
             if not signal:
                 break
 
-            name, args = signal # type: str, tuple
+            name, args = signal  # type: str, tuple
             if name == "key_down" and len(args) >= 4:
                 # when redirectKeyEvent set then never called
                 _, char, _, _, *_ = args

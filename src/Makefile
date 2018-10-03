@@ -51,7 +51,6 @@ SRC_C = \
 	modmachine.c \
 	moduos.c \
 	modutime.c \
-	modusystem.c \
 	modumsgpack.c \
 	gccollect.c \
 	openpie_vfs.c \

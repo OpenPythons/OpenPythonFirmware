@@ -218,12 +218,15 @@ typedef long mp_off_t;
 
 #include <alloca.h>
 
+// Exceptions
+extern const struct _mp_obj_type_t mp_type_SystemError;
 
 // Builtins
 #define MP_STATE_PORT MP_STATE_VM
 
 #define MICROPY_PORT_BUILTINS \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_open), (mp_obj_t)&mp_builtin_open_obj },
+    { MP_OBJ_NEW_QSTR(MP_QSTR_open), (mp_obj_t)&mp_builtin_open_obj }, \
+    { MP_ROM_QSTR(MP_QSTR_SystemError), MP_ROM_PTR(&mp_type_SystemError) }, \
 
 #define MICROPY_PORT_CONSTANTS
 
@@ -246,13 +249,11 @@ extern const struct _mp_obj_module_t mp_module_umsgpack;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_ROM_QSTR(MP_QSTR_machine), MP_ROM_PTR(&mp_module_machine) }, \
-    { MP_ROM_QSTR(MP_QSTR_usystem), MP_ROM_PTR(&mp_module_usystem) }, \
     { MP_ROM_QSTR(MP_QSTR_uos), MP_ROM_PTR(&mp_module_uos) }, \
     { MP_ROM_QSTR(MP_QSTR_utime), MP_ROM_PTR(&mp_module_utime) }, \
     { MP_ROM_QSTR(MP_QSTR_umsgpack), MP_ROM_PTR(&mp_module_umsgpack) }, \
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS \
-    { MP_ROM_QSTR(MP_QSTR_system), MP_ROM_PTR(&mp_module_usystem) }, \
     { MP_ROM_QSTR(MP_QSTR_binascii), MP_ROM_PTR(&mp_module_ubinascii) }, \
     { MP_ROM_QSTR(MP_QSTR_collections), MP_ROM_PTR(&mp_module_collections) }, \
     { MP_ROM_QSTR(MP_QSTR_errno), MP_ROM_PTR(&mp_module_uerrno) }, \

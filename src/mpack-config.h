@@ -15,7 +15,6 @@
 #define MPACK_STRINGS 1
 
 #if MICROPY_ENABLE_GC
-
 #include "py/gc.h"
 
 #define MPACK_MALLOC(b) gc_alloc(b, false)

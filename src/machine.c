@@ -51,10 +51,26 @@ void Signal_Handler() {
     __syscall1(SYS_CONTROL, SYS_CONTROL_RETURN);
 }
 
+typedef int (*Handler)(int, int, int);
+
+void Call_Handler(Handler handler, int a1, int a2, int a3) {
+    __fatal_error("call handler called");
+    nlr_buf_t nlr;
+    if (nlr_push(&nlr) == 0) {
+        int value = handler(a1, a2, a3);
+        __syscall2(SYS_CONTROL, SYS_CONTROL_RETURN, value);
+    } else {
+        // TODO: handle exception
+        int value = -1;
+        __syscall2(SYS_CONTROL, SYS_CONTROL_RETURN, value);
+    }
+}
+
 const uint32_t startup_vector[] __attribute__((section(".startup"))) = {
         (uint32_t) &_estack,
         (uint32_t) &Reset_Handler,
         (uint32_t) &Signal_Handler,
+        (uint32_t) &Call_Handler,
         // TODO: increase memory size
         // TODO: add custom handler for detect failure (or just turn off computer?)
 };

@@ -168,9 +168,16 @@
 #define MICROPY_PY_UZLIB (1)
 #define MICROPY_PY_UJSON (1)
 #define MICROPY_PY_URE (1)
+#define MICROPY_PY_URE_MATCH_GROUPS (1)
+#define MICROPY_PY_URE_MATCH_SPAN_START_END (1)
+#define MICROPY_PY_URE_SUB (1)
 #define MICROPY_PY_UHEAPQ (1)
 #define MICROPY_PY_UTIMEQ (1)
 #define MICROPY_PY_UHASHLIB (1)
+#define MICROPY_PY_UHASHLIB_MD5 (0)
+#define MICROPY_PY_UHASHLIB_SHA1 (0)
+#define MICROPY_PY_UHASHLIB_SHA256 (1)
+#define MICROPY_PY_UCRYPTOLIB (0)
 #define MICROPY_PY_UBINASCII (1)
 #define MICROPY_PY_UBINASCII_CRC32 (1)
 #define MICROPY_PY_URANDOM (1)
@@ -235,12 +242,14 @@ extern const struct _mp_obj_module_t mp_module_machine;
 extern const struct _mp_obj_module_t mp_module_uos;
 extern const struct _mp_obj_module_t mp_module_utime;
 extern const struct _mp_obj_module_t mp_module_usystem;
+extern const struct _mp_obj_module_t mp_module_umsgpack;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_ROM_QSTR(MP_QSTR_machine), MP_ROM_PTR(&mp_module_machine) }, \
     { MP_ROM_QSTR(MP_QSTR_usystem), MP_ROM_PTR(&mp_module_usystem) }, \
     { MP_ROM_QSTR(MP_QSTR_uos), MP_ROM_PTR(&mp_module_uos) }, \
     { MP_ROM_QSTR(MP_QSTR_utime), MP_ROM_PTR(&mp_module_utime) }, \
+    { MP_ROM_QSTR(MP_QSTR_umsgpack), MP_ROM_PTR(&mp_module_umsgpack) }, \
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS \
     { MP_ROM_QSTR(MP_QSTR_system), MP_ROM_PTR(&mp_module_usystem) }, \

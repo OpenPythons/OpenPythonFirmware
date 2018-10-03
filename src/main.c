@@ -12,7 +12,7 @@
 #include "gccollect.h"
 #include "machine.h"
 #include "syscall.h"
-
+#define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
 
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;
@@ -26,6 +26,10 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
         // uncaught exception
         mp_obj_print_exception(&mp_plat_print, (mp_obj_t) nlr.ret_val);
     }
+}
+
+void debug_printer(void *self, const char *buf, size_t len) {
+    __syscall2(SYS_DEBUG, (int)buf, (int)len);
 }
 
 int main(int argc, char **argv) {
@@ -72,9 +76,15 @@ int main(int argc, char **argv) {
             }
         }
     } else {
-        // uncaught exception
-        mp_obj_print_exception(&mp_plat_print, (mp_obj_t) nlr.ret_val);
-        mp_deinit();
+        _debug("invalid")
+        if (nlr_push(&nlr) == 0) {
+            // uncaught exception
+            mp_print_t print = {NULL, debug_printer};
+            mp_obj_print_exception(&print, (mp_obj_t) nlr.ret_val);
+            mp_deinit();
+        } else {
+            __fatal_error("unexcepted error");
+        }
     }
 
     return 0;

@@ -52,9 +52,10 @@ SRC_C = \
 	moduos.c \
 	modutime.c \
 	modusystem.c \
+	modumsgpack.c \
 	gccollect.c \
 	openpie_vfs.c \
-	umsgpack.c \
+	msgpack.c \
 
 SRC_S = \
 	gchelper_m0.s \

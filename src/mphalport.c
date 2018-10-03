@@ -11,8 +11,11 @@ extern mp_obj_t print_hook;
 
 int mp_hal_stdin_rx_chr(void) {
     unsigned char c = 0;
-    mp_handle_pending();
-    c = OPENPIE_IO->RXR;
+    while (c == 0) {
+        mp_handle_pending();
+        c = OPENPIE_IO->RXR;
+    }
+
     return c;
 }
 
@@ -27,6 +30,7 @@ void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
         );
 
         mp_call_function_1_protected(handler, signal_buf);
+        nlr_pop();
     } else {
         __syscall2(SYS_DEBUG, (int)str, (int)len);
     }

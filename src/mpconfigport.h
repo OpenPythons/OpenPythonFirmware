@@ -5,7 +5,7 @@
 
 // Memory allocation policy
 #define MICROPY_GC_ALLOC_THRESHOLD (1)
-#define MICROPY_ALLOC_PATH_MAX (512)
+#define MICROPY_ALLOC_PATH_MAX (255)
 #define MICROPY_MODULE_DICT_SIZE (1)
 #define MICROPY_MALLOC_USES_ALLOCATED_SIZE (1)
 #define MICROPY_QSTR_BYTES_IN_LEN (1)
@@ -15,7 +15,7 @@
 
 // MicroPython emitters
 #define MICROPY_PERSISTENT_CODE_LOAD (1)
-#define MICROPY_PERSISTENT_CODE_SAVE (0)
+#define MICROPY_PERSISTENT_CODE_SAVE (1)
 #define MICROPY_EMIT_THUMB (0)
 #define MICROPY_EMIT_INLINE_THUMB (0)
 #define MICROPY_EMIT_INLINE_THUMB_ARMV7M (0)
@@ -39,7 +39,6 @@
 
 // Optimisations
 #define MICROPY_OPT_COMPUTED_GOTO (1)
-// incompatible MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE
 #define MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE (0)
 #define MICROPY_OPT_MPZ_BITWISE (1)
 
@@ -193,6 +192,8 @@
 #define MICROPY_PY_BTREE (0)
 
 // Miscellaneous settings
+extern const struct _mp_print_t debug_print;
+#define MICROPY_DEBUG_PRINTER (&debug_print)
 #define MICROPY_OBJ_BASE_ALIGNMENT
 #define MICROPY_BEGIN_ATOMIC_SECTION() (0)
 #define MICROPY_END_ATOMIC_SECTION(state) (void)(state)

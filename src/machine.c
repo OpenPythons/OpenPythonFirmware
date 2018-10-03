@@ -16,7 +16,8 @@ void _start(void) {
 }
 
 void _exit(int status) {
-    __syscall1(SYS_CONTROL, SYS_CONTROL_SHUTDOWN);
+    for (;;);
+    // __syscall1(SYS_CONTROL, SYS_CONTROL_SHUTDOWN);
 }
 
 void Reset_Handler(void) __attribute__((naked));
@@ -62,6 +63,7 @@ void Call_Handler(Handler handler, int a1, int a2, int a3) {
     if (nlr_push(&nlr) == 0) {
         int value = handler(a1, a2, a3);
         __syscall2(SYS_CONTROL, SYS_CONTROL_RETURN, value);
+        nlr_pop();
     } else {
         // TODO: handle exception
         int value = -1;

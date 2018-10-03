@@ -17,8 +17,7 @@ def print_handler(buf):
         for char in buf:
             monitor.putChar(char)
     except BaseException as e:
-        debug("exc", type(e).__name__ + ":" + str(e))
-        debug("trace", dir(e))
+        debug("exc%s: %s" % (type(e).__name__ , e))
 
 
 def signal_handler(_):
@@ -53,4 +52,4 @@ def signal_handle(_):
                 if DEBUG:
                     debug("signal", name, args, len(args))
         except BaseException as e:
-            debug("exc", type(e).__name__ + ":" + str(e))
+            debug("exc%s: %s" % (type(e).__name__ , e))

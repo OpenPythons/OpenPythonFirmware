@@ -53,7 +53,7 @@ class FileSystem:
         if self.readonly:
             raise OSError(1)
 
-        print(self.address, 'remove', path)
+        self.fs.remove(path)
 
     def rename(self, old_path, new_path):
         if self.readonly:

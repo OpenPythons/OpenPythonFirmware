@@ -39,14 +39,17 @@
 
 #if MICROPY_OPENPIE_VFS
 
+#define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
+
 int SVC_CALL_VFS(int r0, int r1, int r2, int r3) {
     return __syscall4(SYS_VFS, r0, r1, r2, r3);
 }
 
-int volatile SVC_CALL_VFS_OUT(int r0, int r1, int r2, int r3, int *v1) {
+int SVC_CALL_VFS_OUT(int r0, int r1, int r2, int r3, int *v1) {
     int errno = __syscall5(SYS_VFS, r0, r1, r2, r3, (int) v1);
     return errno;
 }
+
 
 typedef enum vfs_command {
     VFS_OPEN = 1,

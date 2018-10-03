@@ -12,12 +12,15 @@
 #include "gccollect.h"
 #include "machine.h"
 #include "syscall.h"
+#include <stdarg.h>
 
 #define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
 
 void debug_printer(void *self, const char *buf, size_t len) {
     __syscall2(SYS_DEBUG, (int) buf, (int) len);
 }
+
+const struct _mp_print_t debug_print = {NULL, debug_printer};
 
 int main(int argc, char **argv) {
     nlr_buf_t nlr;
@@ -62,11 +65,13 @@ int main(int argc, char **argv) {
                 }
             }
         }
+
+        nlr_pop();
     } else {
         if (nlr_push(&nlr) == 0) {
-            mp_print_t print = {NULL, debug_printer};
-            mp_obj_print_exception(&print, (mp_obj_t) nlr.ret_val);
+            mp_obj_print_exception(&debug_print, (mp_obj_t) nlr.ret_val);
             mp_deinit();
+            nlr_pop();
         } else {
             __fatal_error("unexpected error");
         }

@@ -1,7 +1,7 @@
+from uio import FileIO
+
 from component import Component
 from system import components
-from uio import FileIO
-import uerrno
 
 
 class FileSystem:
@@ -11,6 +11,7 @@ class FileSystem:
         self.readonly = self.fs.isReadOnly()
         self.cwd = "/"
 
+    # noinspection PyUnusedLocal
     def mount(self, readonly, mkfs):
         self.readonly = self.fs.isReadOnly() or readonly
 
@@ -98,6 +99,7 @@ class FileSystem:
             mtime,  # ctime
         )
 
+    # noinspection PyUnusedLocal
     def statvfs(self, path):
         return (
             0,  # f_bsize

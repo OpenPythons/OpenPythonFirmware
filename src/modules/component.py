@@ -1,8 +1,8 @@
-from system import syscall, methods, annotations
+from system import invoke, methods, annotations
 import system
 
 
-def components():
+def devices():
     return {value: Component(key, value) for key, value in system.components().items()}
 
 
@@ -12,7 +12,7 @@ class ComponentMethod:
         self.name = name
 
     def __call__(self, *args):
-        return syscall(self.component.address, self.name, *args)
+        return invoke(self.component.address, self.name, *args)
 
     @property
     def doc(self):

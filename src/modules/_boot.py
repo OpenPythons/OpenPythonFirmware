@@ -3,5 +3,3 @@ from system import debug
 
 __all__ = ["print_handler", "signal_handler"]
 del __all__
-
-debug("hello")

@@ -1,4 +1,4 @@
-def syscall(obj: str) -> str:
+def invoke(obj: str) -> str:
     pass
 
 
@@ -10,11 +10,11 @@ def components() -> str:
     pass
 
 
-def methods(address: str) -> str:
+def methods(address: str) -> list:
     pass
 
 
-def annotations(address: str) -> str:
+def annotations(address: str, method: str) -> str:
     pass
 
 

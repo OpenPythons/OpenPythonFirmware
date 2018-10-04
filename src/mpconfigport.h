@@ -24,7 +24,7 @@
 
 // Compiler configuration
 #define MICROPY_ENABLE_COMPILER (1)
-#define MICROPY_DYNAMIC_COMPILER (1)
+#define MICROPY_DYNAMIC_COMPILER (0)
 #define MICROPY_COMP_CONST_FOLDING (1)
 #define MICROPY_COMP_MODULE_CONST (1)
 #define MICROPY_COMP_CONST (1)
@@ -39,7 +39,7 @@
 
 // Optimisations
 #define MICROPY_OPT_COMPUTED_GOTO (1)
-#define MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE (0)
+#define MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE (1)
 #define MICROPY_OPT_MPZ_BITWISE (1)
 
 // Python internal features

@@ -29,7 +29,7 @@ CFLAGS += -DMPACK_HAS_CONFIG=1
 CFLAGS += -fno-jump-tables
 
 # when MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE = 1
-# MPY_CROSS_FLAGS += -mcache-lookup-bc
+MPY_CROSS_FLAGS += -mcache-lookup-bc
 
 #Debugging/Optimization
 ifeq ($(DEBUG), 1)

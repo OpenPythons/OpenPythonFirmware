@@ -46,11 +46,16 @@ void Reset_Handler(void) {
     _start();
 }
 
+STATIC mp_obj_t handler = NULL;
 void Signal_Handler() {
-    mp_obj_t handler = mp_obj_dict_get(
-            MP_OBJ_FROM_PTR(&MP_STATE_VM(dict_main)),
-            MP_OBJ_NEW_QSTR(MP_QSTR_signal_handler)
-    ); // TODO: optimize
+    if (handler == NULL) {
+        handler = mp_obj_dict_get(
+                MP_OBJ_FROM_PTR(&MP_STATE_VM(dict_main)),
+                MP_OBJ_NEW_QSTR(MP_QSTR_signal_handler)
+        );
+    }
+
+    // mp_call_function_1_protected(handler, mp_const_none);
     mp_sched_schedule(handler, mp_const_none);
     __syscall1(SYS_CONTROL, SYS_CONTROL_RETURN);
 }

@@ -1,5 +1,6 @@
 import micropython
 from machine import signal as pop_signal, set_stdin_char, debug
+import ujson
 
 from component import Component, Monitor, devices
 
@@ -28,9 +29,15 @@ def signal_handle(_):
     DEBUG = False
     while True:
         try:
+            # TODO: sleeping is possble with ticks=n
+            #       sleeping with some ticks but signal available then resume computer and give signal
+            #       ExecutionResult.Sleep(inf) => when signal is available then return signal
             signal = pop_signal()
+            # debug("check signal " + repr(signal))
             if not signal:
                 break
+
+            debug(ujson.dumps(signal) + '\n')
 
             name, args = signal  # type: str, tuple
             if name == "key_down" and len(args) >= 4:

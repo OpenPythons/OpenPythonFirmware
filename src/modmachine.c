@@ -219,13 +219,14 @@ STATIC mp_obj_t usystem_methods(mp_obj_t address_obj) {
 MP_DEFINE_CONST_FUN_OBJ_1(usystem_methods_obj, usystem_methods);
 
 
-STATIC mp_obj_t usystem_annotations(mp_obj_t address_obj) {
+STATIC mp_obj_t usystem_annotations(mp_obj_t address_obj, mp_obj_t method_obj) {
     byte *data = NULL;
     size_t size = 0;
 
     mpack_writer_t *writer = msgpack_dump_new(&data, &size);
-    mpack_start_array(writer, 1);
+    mpack_start_array(writer, 2);
         msgpack_dump(writer, address_obj);
+        msgpack_dump(writer, method_obj);
     mpack_finish_array(writer);
     msgpack_dump_close(writer);
 
@@ -233,7 +234,7 @@ STATIC mp_obj_t usystem_annotations(mp_obj_t address_obj) {
     return parse_2(result);
 }
 
-MP_DEFINE_CONST_FUN_OBJ_1(usystem_annotations_obj, usystem_annotations);
+MP_DEFINE_CONST_FUN_OBJ_2(usystem_annotations_obj, usystem_annotations);
 
 
 mp_obj_t usystem_set_stdin_char(mp_obj_t obj) {

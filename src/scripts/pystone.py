@@ -34,7 +34,7 @@ from utime import ticks_ms
 
 
 def clock():
-    return ticks_ms() / 1000
+    return ticks_ms() / 1000.0
 
 
 __version__ = "1.2"

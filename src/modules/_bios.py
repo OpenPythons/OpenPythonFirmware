@@ -117,14 +117,15 @@ def main():
         uos.mount(FileSystem(extfs.address), '/opos', readonly=True)
 
     eeprom.setLabel("EEPROM (micropython)")
-    eeprom.setData(b"""import gc
+    eeprom.setData(b"")
+    eeprom.set(b"""import gc
 gc.collect()
 gc.threshold(gc.mem_free() // 4 + gc.mem_alloc())        
 from opos.lib.shell import spawn
 spawn("/opos/bin/shell.py")
 """)
 
-    data = eeprom.getData()
+    data = eeprom.get()
 
     try:
         exec(data)

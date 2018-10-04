@@ -25,7 +25,7 @@ class ComponentMethod:
         else:
             doc = ""
 
-        return "ComponentMethod<{0}, {1}>{2}".format(self.component, self.name, doc)
+        return "ComponentMethod<{0!r}, {1!r}>{2}".format(self.component, self.name, doc)
 
 
 class Component:

@@ -12,6 +12,7 @@ FIRMWARE = $(BUILD)/firmware
 # include py core make definitions
 include $(TOP)/py/py.mk
 
+# TODO: common CROSS_COMPILE required
 CROSS_COMPILE = /opt/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-
 # CROSS_COMPILE = arm-none-eabi-
 

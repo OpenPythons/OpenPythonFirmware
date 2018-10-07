@@ -1,2 +1,0 @@
-# framebuf
-"Frame buffer manipulation"

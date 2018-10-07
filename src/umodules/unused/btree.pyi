@@ -1,2 +1,0 @@
-# btree
-"simple BTree database"

@@ -49,7 +49,7 @@ void Reset_Handler(void) {
 
 
 STATIC mp_obj_t signal_hook0(mp_obj_t none_obj) {
-    mp_call_function_0(signal_hook_obj);
+    mp_call_function_1(signal_hook_obj, MP_OBJ_NEW_SMALL_INT(0));
     return mp_const_none;
 }
 

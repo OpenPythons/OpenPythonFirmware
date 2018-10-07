@@ -7,6 +7,7 @@
 #include "mphalport.h"
 #include "syscall.h"
 
+extern mp_obj_t signal_hook_obj;
 extern mp_obj_t input_hook_obj;
 extern mp_obj_t print_hook_obj;
 
@@ -38,10 +39,13 @@ void mp_hal_stdout_tx_strn_cooked(const char *str, size_t len) {
 
 void mp_hal_delay_ms(mp_uint_t ms) {
     uint32_t start = mp_hal_ticks_ms();
-    extern void mp_handle_pending(void);
-    while (mp_hal_ticks_ms() - start < ms) {
+    uint32_t elapsed = 0;
+    while (elapsed < ms) {
+        elapsed = mp_hal_ticks_ms() - start;
         mp_handle_pending();
-        // OPENPIE_CONTROLLER->IDLE = 1;
+        int32_t ticks = (ms - elapsed) / (1000 / 20);
+        mp_obj_t tick_obj = mp_obj_new_int(ticks < 0? 0 : ticks);
+        mp_call_function_1(signal_hook_obj, tick_obj);
     }
 }
 

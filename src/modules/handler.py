@@ -31,10 +31,10 @@ def print_handler(buf):
 
 
 @machine.hook_signal
-def signal_handler():
+def signal_handler(ticks):
     DEBUG = False
     try:
-        signal = pop_signal(20)
+        signal = pop_signal(ticks)
         if signal is None:
             return
 

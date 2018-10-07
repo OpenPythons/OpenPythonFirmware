@@ -6,6 +6,8 @@
 #include "machine.h"
 #include "syscall.h"
 
+extern mp_obj_t signal_hook_obj;
+
 MP_DEFINE_EXCEPTION(SystemError, Exception)
 
 void _start(void) {
@@ -45,19 +47,30 @@ void Reset_Handler(void) {
     _start();
 }
 
-STATIC mp_obj_t handler = NULL;
+
+STATIC mp_obj_t signal_hook0(mp_obj_t none_obj) {
+    mp_call_function_0(signal_hook_obj);
+    return mp_const_none;
+}
+
+MP_DEFINE_CONST_FUN_OBJ_1(signal_hook0_obj, signal_hook0);
+
+
 void Signal_Handler() {
-    if (handler == NULL) {
-        handler = mp_obj_dict_get(
-                MP_OBJ_FROM_PTR(&MP_STATE_VM(dict_main)),
-                MP_OBJ_NEW_QSTR(MP_QSTR_signal_handler)
-        );
+    nlr_buf_t nlr;
+    if (nlr_push(&nlr) == 0) {
+        if (signal_hook_obj != mp_const_none) {
+            mp_sched_schedule((mp_obj_t)&signal_hook0_obj, mp_const_none);
+        }
+
+        nlr_pop();
+    } else {
+        __fatal_error("Signal_Handler() fail");
     }
 
-    // mp_call_function_1_protected(handler, mp_const_none);
-    mp_sched_schedule(handler, mp_const_none);
     __syscall1(SYS_CONTROL, SYS_CONTROL_RETURN);
 }
+
 
 typedef int (*Handler)(int, int, int);
 

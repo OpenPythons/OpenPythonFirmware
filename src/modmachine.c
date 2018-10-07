@@ -21,6 +21,10 @@
 #include <stdio.h>
 #include <string.h>
 
+mp_obj_t signal_hook_obj = mp_const_none;
+mp_obj_t print_hook_obj = mp_const_none;
+mp_obj_t input_hook_obj = mp_const_none;
+
 
 typedef struct _openpie_syscall_result_t {
     byte *buf;
@@ -128,34 +132,27 @@ STATIC mp_obj_t usystem_repl_call(mp_obj_t func, mp_obj_t locals_obj) {
 MP_DEFINE_CONST_FUN_OBJ_2(usystem_repl_call_obj, usystem_repl_call);
 
 
-mp_obj_t interrupt_hook_obj = mp_const_none;
-
-STATIC mp_obj_t usystem_interrupt_hook(mp_obj_t hook) {
-    interrupt_hook_obj = hook;
-    return mp_const_none;
+STATIC mp_obj_t usystem_hook_signal(mp_obj_t hook_obj) {
+    signal_hook_obj = hook_obj;
+    return hook_obj;
 }
 
-MP_DEFINE_CONST_FUN_OBJ_1(usystem_interrupt_hook_obj, usystem_interrupt_hook);
+MP_DEFINE_CONST_FUN_OBJ_1(usystem_hook_signal_obj, usystem_hook_signal);
 
 
-mp_obj_t print_hook_obj = mp_const_none;
-
-STATIC mp_obj_t usystem_print_hook(mp_obj_t hook) {
-    print_hook_obj = hook;
-    return mp_const_none;
+STATIC mp_obj_t usystem_hook_print(mp_obj_t hook_obj) {
+    print_hook_obj = hook_obj;
+    return hook_obj;
 }
 
-MP_DEFINE_CONST_FUN_OBJ_1(usystem_print_hook_obj, usystem_print_hook);
+MP_DEFINE_CONST_FUN_OBJ_1(usystem_hook_print_obj, usystem_hook_print);
 
-
-mp_obj_t input_hook_obj = mp_const_none;
-
-STATIC mp_obj_t usystem_input_hook(mp_obj_t hook) {
-    input_hook_obj = hook;
-    return mp_const_none;
+STATIC mp_obj_t usystem_hook_input(mp_obj_t hook_obj) {
+    input_hook_obj = hook_obj;
+    return hook_obj;
 }
 
-MP_DEFINE_CONST_FUN_OBJ_1(usystem_input_hook_obj, usystem_input_hook);
+MP_DEFINE_CONST_FUN_OBJ_1(usystem_hook_input_obj, usystem_hook_input);
 
 
 STATIC mp_obj_t usystem_invoke(size_t n_args, const mp_obj_t *args) {
@@ -292,9 +289,9 @@ STATIC const mp_rom_map_elem_t machine_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR_repl_compile),   MP_ROM_PTR(&usystem_repl_compile_obj)},
         {MP_ROM_QSTR(MP_QSTR_repl_call),      MP_ROM_PTR(&usystem_repl_call_obj)},
 
-        {MP_ROM_QSTR(MP_QSTR_interrupt_hook), MP_ROM_PTR(&usystem_interrupt_hook_obj)},
-        {MP_ROM_QSTR(MP_QSTR_input_hook),     MP_ROM_PTR(&usystem_input_hook_obj)},
-        {MP_ROM_QSTR(MP_QSTR_print_hook),     MP_ROM_PTR(&usystem_print_hook_obj)},
+        {MP_ROM_QSTR(MP_QSTR_hook_signal),    MP_ROM_PTR(&usystem_hook_signal_obj)},
+        {MP_ROM_QSTR(MP_QSTR_hook_input),     MP_ROM_PTR(&usystem_hook_input_obj)},
+        {MP_ROM_QSTR(MP_QSTR_hook_print),     MP_ROM_PTR(&usystem_hook_print_obj)},
         {MP_ROM_QSTR(MP_QSTR_invoke),         MP_ROM_PTR(&usystem_invoke_obj)},
         {MP_ROM_QSTR(MP_QSTR_signal),         MP_ROM_PTR(&usystem_signal_obj)},
         {MP_ROM_QSTR(MP_QSTR_components),     MP_ROM_PTR(&usystem_components_obj)},

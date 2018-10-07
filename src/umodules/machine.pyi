@@ -21,7 +21,7 @@ def invoke(address: str, method: str, *args: Any) -> Union[Any, List]:
     pass
 
 
-def signal() -> List:
+def signal(ticks: int) -> List:
     pass
 
 
@@ -45,10 +45,6 @@ def get_stdout_str() -> int:
     pass
 
 
-def print_hook(func):
-    pass
-
-
 def debug(*args):
     pass
 
@@ -58,4 +54,16 @@ def shutdown():
 
 
 def reboot():
+    pass
+
+
+def hook_input(func):
+    pass
+
+
+def hook_print(func):
+    pass
+
+
+def hook_signal(func):
     pass

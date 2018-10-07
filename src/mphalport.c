@@ -7,7 +7,6 @@
 #include "mphalport.h"
 #include "syscall.h"
 
-extern mp_obj_t interrupt_hook_obj;
 extern mp_obj_t input_hook_obj;
 extern mp_obj_t print_hook_obj;
 

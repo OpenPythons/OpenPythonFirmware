@@ -16,8 +16,10 @@ buf = []
 
 @machine.hook_input
 def input_handler():
+    monitor.setBlink()
     while not buf:
-        signal_handler()
+        signal_handler(10)
+        monitor.blink()
 
     return int(buf.pop(0))
 
@@ -26,6 +28,7 @@ def input_handler():
 def print_handler(buf):
     try:
         monitor.put(buf)
+        monitor.blink()
     except BaseException as e:
         debug("print_handler exc =? %s: %s" % (type(e).__name__, e))
 

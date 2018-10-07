@@ -51,9 +51,22 @@ class Monitor:
         self.widthPos = 1
         self.heightPos = 1
         self.backCount = 0
+        self.blinkState = False
 
     def __getattr__(self, item):
         return getattr(self.gpu, item)
+
+    def clearBlink(self):
+        if self.blinkState:
+            self.blink()
+
+    def setBlink(self):
+        if not self.blinkState:
+            self.blink()
+
+    def blink(self):
+        self.blinkState = not self.blinkState
+        self.gpu.set(self.widthPos, self.heightPos, "_" if self.blinkState else " ")
 
     def scroll(self):
         self.gpu.copy(1, 2, self.widthSize, self.heightSize, 0, - 1)
@@ -64,6 +77,9 @@ class Monitor:
             self.putChar(char)
 
     def putChar(self, char):
+        if self.blinkState:
+            self.blink()
+
         if char == "\n":
             self.widthPos = 1
             self.heightPos += 1

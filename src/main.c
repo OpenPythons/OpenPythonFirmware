@@ -12,7 +12,6 @@
 #include "gccollect.h"
 #include "machine.h"
 #include "syscall.h"
-#include "openpie_mcu.h"
 #include <stdarg.h>
 
 #define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
@@ -50,11 +49,8 @@ int main(int argc, char **argv) {
         mp_pystack_init(&pystack, &pystack[MP_ARRAY_SIZE(pystack)]);
 #endif
 
-        size_t ram_size = (size_t)OPENPIE_CONTROLLER->RAM_SIZE;
-        if (!ram_size)
-            gc_init(&_ram_start, &_ram_end);
-        else
-            gc_init(&_ram_start, (&_ram_start) + ram_size);
+        size_t ram_size = (size_t) __syscall1(SYS_INFO, SYS_INFO_RAM_SIZE);
+        gc_init(&_ram_start, (&_ram_start) + ram_size);
 
         mp_init();
         mp_obj_list_init(mp_sys_path, 0);
@@ -88,13 +84,8 @@ int main(int argc, char **argv) {
 
         nlr_pop();
     } else {
-        if (nlr_push(&nlr) == 0) {
-            mp_obj_print_exception(&debug_print, (mp_obj_t) nlr.ret_val);
-            mp_deinit();
-            nlr_pop();
-        } else {
-            __fatal_error("unexpected error");
-        }
+        mp_obj_print_exception(&debug_print, (mp_obj_t) nlr.ret_val);
+        mp_deinit();
     }
 
     return 0;

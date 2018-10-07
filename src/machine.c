@@ -3,7 +3,6 @@
 #include "py/objexcept.h"
 #include "lib/utils/interrupt_char.h"
 #include "gccollect.h"
-#include "openpie_mcu.h"
 #include "machine.h"
 #include "syscall.h"
 
@@ -38,9 +37,9 @@ void Reset_Handler(void) {
         *dest++ = 0;
     }
 
-    OPENPIE_CONTROLLER->PENDING = (uint32_t) &MP_STATE_VM(mp_pending_exception);
-    OPENPIE_CONTROLLER->EXCEPTION = (uint32_t) &MP_STATE_VM(mp_kbd_exception);
-    OPENPIE_CONTROLLER->INTR_CHAR = (uint32_t) &mp_interrupt_char;
+    // OPENPIE_CONTROLLER->PENDING = (uint32_t) &MP_STATE_VM(mp_pending_exception);
+    // OPENPIE_CONTROLLER->EXCEPTION = (uint32_t) &MP_STATE_VM(mp_kbd_exception);
+    // OPENPIE_CONTROLLER->INTR_CHAR = (uint32_t) &mp_interrupt_char;
 
     // jump to board initialisation
     _start();

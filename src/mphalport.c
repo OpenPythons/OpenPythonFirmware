@@ -1,39 +1,40 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "py/runtime.h"
 #include "py/objstr.h"
-#include "openpie_mcu.h"
 #include "mphalport.h"
 #include "syscall.h"
 
-extern mp_obj_t print_hook;
+extern mp_obj_t interrupt_hook_obj;
+extern mp_obj_t input_hook_obj;
+extern mp_obj_t print_hook_obj;
 
 int mp_hal_stdin_rx_chr(void) {
-    unsigned char c = 0;
-    while (c == 0) {
-        mp_handle_pending();
-        c = OPENPIE_IO->RXR;
+    if (input_hook_obj == mp_const_none) {
+        return 0;
+    } else {
+        mp_obj_t obj = mp_call_function_0(input_hook_obj);
+        return (int) mp_obj_get_int(obj);
     }
+}
 
-    return c;
+void mp_hal_stdout_tx_str(const char *str) {
+    mp_hal_stdout_tx_strn(str, strlen(str));
 }
 
 void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
-    mp_obj_t signal_buf = mp_obj_new_str(str, len);
-    nlr_buf_t nlr;
-
-    if (nlr_push(&nlr) == 0) {
-        mp_obj_t handler = mp_obj_dict_get(
-                MP_OBJ_FROM_PTR(&MP_STATE_VM(dict_main)),
-                MP_OBJ_NEW_QSTR(MP_QSTR_print_handler)
-        );
-
-        mp_call_function_1_protected(handler, signal_buf);
-        nlr_pop();
-    } else {
+    if (print_hook_obj == mp_const_none) {
         __syscall2(SYS_DEBUG, (int)str, (int)len);
+    } else {
+        mp_obj_t str_obj = mp_obj_new_str(str, len);
+        mp_call_function_1(print_hook_obj, str_obj);
     }
+}
+
+void mp_hal_stdout_tx_strn_cooked(const char *str, size_t len) {
+    mp_hal_stdout_tx_strn(str, len);
 }
 
 void mp_hal_delay_ms(mp_uint_t ms) {
@@ -41,7 +42,7 @@ void mp_hal_delay_ms(mp_uint_t ms) {
     extern void mp_handle_pending(void);
     while (mp_hal_ticks_ms() - start < ms) {
         mp_handle_pending();
-        OPENPIE_CONTROLLER->IDLE = 1;
+        // OPENPIE_CONTROLLER->IDLE = 1;
     }
 }
 
@@ -52,14 +53,15 @@ void mp_hal_delay_us(mp_uint_t us) {
     }
 }
 
-mp_uint_t mp_hal_ticks_us(void) {
-    return mp_hal_ticks_ms() * 1000;
+mp_uint_t mp_hal_ticks_ms(void) {
+    return (mp_uint_t) __syscall1(SYS_TIMER, SYS_TIMER_TICKS_MS);
 }
 
-mp_uint_t mp_hal_ticks_ms(void) {
-    return RTC->TICKS_MS;
+mp_uint_t mp_hal_ticks_us(void) {
+    return (mp_uint_t) __syscall1(SYS_TIMER, SYS_TIMER_TICKS_US);
 }
 
 mp_uint_t mp_hal_ticks_cpu(void) {
-    return OPENPIE_CONTROLLER->INSNS;
+    // return OPENPIE_CONTROLLER->INSNS;
+    return 0; // return (mp_uint_t) __syscall1(SYS_TIMER, SYS_TIMER_TICKS_CPU);
 }

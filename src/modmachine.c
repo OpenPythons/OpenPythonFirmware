@@ -11,7 +11,6 @@
 #include "py/objstr.h"
 #include "py/runtime.h"
 #include "openpie_vfs.h"
-#include "openpie_mcu.h"
 #include "syscall.h"
 #include "msgpack.h"
 #include "py/mphal.h"
@@ -129,14 +128,35 @@ STATIC mp_obj_t usystem_repl_call(mp_obj_t func, mp_obj_t locals_obj) {
 MP_DEFINE_CONST_FUN_OBJ_2(usystem_repl_call_obj, usystem_repl_call);
 
 
-mp_obj_t print_hook = NULL;
+mp_obj_t interrupt_hook_obj = mp_const_none;
+
+STATIC mp_obj_t usystem_interrupt_hook(mp_obj_t hook) {
+    interrupt_hook_obj = hook;
+    return mp_const_none;
+}
+
+MP_DEFINE_CONST_FUN_OBJ_1(usystem_interrupt_hook_obj, usystem_interrupt_hook);
+
+
+mp_obj_t print_hook_obj = mp_const_none;
 
 STATIC mp_obj_t usystem_print_hook(mp_obj_t hook) {
-    print_hook = hook;
+    print_hook_obj = hook;
     return mp_const_none;
 }
 
 MP_DEFINE_CONST_FUN_OBJ_1(usystem_print_hook_obj, usystem_print_hook);
+
+
+mp_obj_t input_hook_obj = mp_const_none;
+
+STATIC mp_obj_t usystem_input_hook(mp_obj_t hook) {
+    input_hook_obj = hook;
+    return mp_const_none;
+}
+
+MP_DEFINE_CONST_FUN_OBJ_1(usystem_input_hook_obj, usystem_input_hook);
+
 
 STATIC mp_obj_t usystem_invoke(size_t n_args, const mp_obj_t *args) {
     byte *data = NULL;
@@ -186,12 +206,13 @@ STATIC mp_obj_t usystem_invoke(size_t n_args, const mp_obj_t *args) {
 MP_DEFINE_CONST_FUN_OBJ_VAR(usystem_invoke_obj, 2, usystem_invoke);
 
 
-STATIC mp_obj_t usystem_signal() {
-    void *result = (void *) __syscall1(SYS_REQUEST, 0); // 0 = signal
+STATIC mp_obj_t usystem_signal(mp_obj_t ticks_obj) {
+    mp_int_t ticks = mp_obj_get_int(ticks_obj);
+    void *result = (void *) __syscall2(SYS_SIGNAL, SYS_SIGNAL_REQUEST, (int) ticks); // sleep with ticks
     return parse_2(result);
 }
 
-MP_DEFINE_CONST_FUN_OBJ_0(usystem_signal_obj, usystem_signal);
+MP_DEFINE_CONST_FUN_OBJ_1(usystem_signal_obj, usystem_signal);
 
 
 STATIC mp_obj_t usystem_components() {
@@ -237,28 +258,6 @@ STATIC mp_obj_t usystem_annotations(mp_obj_t address_obj, mp_obj_t method_obj) {
 MP_DEFINE_CONST_FUN_OBJ_2(usystem_annotations_obj, usystem_annotations);
 
 
-mp_obj_t usystem_set_stdin_char(mp_obj_t obj) {
-    if (MP_OBJ_IS_INT(obj)) {
-        mp_int_t value = mp_obj_get_int(obj);
-        OPENPIE_IO->RXR = value;
-        return mp_const_true;
-    }
-
-    return mp_const_false;
-}
-
-MP_DEFINE_CONST_FUN_OBJ_1(usystem_set_stdin_char_obj, usystem_set_stdin_char);
-
-
-mp_obj_t usystem_get_stdout_str() {
-    void *result = (void *) __syscall1(SYS_LEGACY, SYS_LEGACY_usystem_get_stdout_str);
-    return parse_2(result);
-}
-
-MP_DEFINE_CONST_FUN_OBJ_0(usystem_get_stdout_str_obj, usystem_get_stdout_str);
-
-
-
 mp_obj_t usystem_shutdown() {
     __syscall1(SYS_CONTROL, SYS_CONTROL_SHUTDOWN);
     __fatal_error("shutdown failure");
@@ -293,23 +292,21 @@ STATIC const mp_rom_map_elem_t machine_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR_repl_compile),   MP_ROM_PTR(&usystem_repl_compile_obj)},
         {MP_ROM_QSTR(MP_QSTR_repl_call),      MP_ROM_PTR(&usystem_repl_call_obj)},
 
+        {MP_ROM_QSTR(MP_QSTR_interrupt_hook), MP_ROM_PTR(&usystem_interrupt_hook_obj)},
+        {MP_ROM_QSTR(MP_QSTR_input_hook),     MP_ROM_PTR(&usystem_input_hook_obj)},
         {MP_ROM_QSTR(MP_QSTR_print_hook),     MP_ROM_PTR(&usystem_print_hook_obj)},
         {MP_ROM_QSTR(MP_QSTR_invoke),         MP_ROM_PTR(&usystem_invoke_obj)},
         {MP_ROM_QSTR(MP_QSTR_signal),         MP_ROM_PTR(&usystem_signal_obj)},
         {MP_ROM_QSTR(MP_QSTR_components),     MP_ROM_PTR(&usystem_components_obj)},
         {MP_ROM_QSTR(MP_QSTR_methods),        MP_ROM_PTR(&usystem_methods_obj)},
         {MP_ROM_QSTR(MP_QSTR_annotations),    MP_ROM_PTR(&usystem_annotations_obj)},
-        {MP_ROM_QSTR(MP_QSTR_set_stdin_char), MP_ROM_PTR(&usystem_set_stdin_char_obj)},
-        {MP_ROM_QSTR(MP_QSTR_get_stdout_str), MP_ROM_PTR(&usystem_get_stdout_str_obj)},
         {MP_ROM_QSTR(MP_QSTR_shutdown),       MP_ROM_PTR(&usystem_shutdown_obj)},
         {MP_ROM_QSTR(MP_QSTR_reboot),         MP_ROM_PTR(&usystem_reboot_obj)},
         {MP_ROM_QSTR(MP_QSTR_debug),          MP_ROM_PTR(&usystem_debug_obj)},
 
-        /*
         {MP_ROM_QSTR(MP_QSTR_mem8),     MP_ROM_PTR(&machine_mem8_obj)},
         {MP_ROM_QSTR(MP_QSTR_mem16),    MP_ROM_PTR(&machine_mem16_obj)},
         {MP_ROM_QSTR(MP_QSTR_mem32),    MP_ROM_PTR(&machine_mem32_obj)},
-        */
 };
 STATIC MP_DEFINE_CONST_DICT(machine_module_globals, machine_module_globals_table);
 

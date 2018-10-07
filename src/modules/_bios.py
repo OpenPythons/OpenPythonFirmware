@@ -1,13 +1,13 @@
 import builtins
 import sys
 
-import micropython
 import machine
+import micropython
 import uos
+from machine import components
 
 from component import devices, Component
 from handler import monitor
-from machine import components
 from vfs import FileSystem
 
 

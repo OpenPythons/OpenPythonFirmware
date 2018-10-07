@@ -1,4 +1,5 @@
-from machine import signal as pop_signal, debug
+import machine
+from machine import debug, signal as pop_signal
 
 from component import Component, Monitor, devices
 
@@ -6,13 +7,14 @@ devices = devices()
 gpu = devices["gpu"]
 screen = devices["screen"]
 
-gpu.bind(screen.address)
 monitor = Monitor(gpu)
+gpu.bind(screen.address)
 gpu.fill(1, 1, monitor.widthSize, monitor.heightSize, " ")
 
 buf = []
 
 
+@machine.hook_input
 def input_handler():
     while not buf:
         signal_handler()
@@ -20,6 +22,7 @@ def input_handler():
     return int(buf.pop(0))
 
 
+@machine.hook_print
 def print_handler(buf):
     try:
         monitor.put(buf)
@@ -27,6 +30,7 @@ def print_handler(buf):
         debug("print_handler exc =? %s: %s" % (type(e).__name__, e))
 
 
+@machine.hook_signal
 def signal_handler():
     DEBUG = False
     try:

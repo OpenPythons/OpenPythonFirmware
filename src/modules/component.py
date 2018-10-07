@@ -59,10 +59,13 @@ class Monitor:
         self.gpu.copy(1, 2, self.widthSize, self.heightSize, 0, - 1)
         self.gpu.fill(1, self.heightSize, self.widthSize, 1, " ")
 
+    def put(self, buf: str):
+        for char in buf:
+            self.putChar(char)
+
     def putChar(self, char):
-        if char == "\r":
-            self.widthPos = 1
         if char == "\n":
+            self.widthPos = 1
             self.heightPos += 1
 
         if self.widthPos > self.widthSize:

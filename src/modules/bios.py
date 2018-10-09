@@ -10,7 +10,7 @@ def bios():
     eeprom = eeproms[0]
     if True:
         invoke(eeprom, 'setLabel', "EEPROM (micropython)")
-        invoke(eeprom, 'set', b"""python = []
+        invoke(eeprom, 'set', b"""
 from machine import invoke, components, crash
 from uio import FileIO
 

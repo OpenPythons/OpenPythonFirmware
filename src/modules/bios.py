@@ -51,8 +51,8 @@ def main():
 
     content = load(address)
     context = {'__name__': '__main__', '__path__': address}
-    func = compile(content, "<init>", "exec")
-    exec(content, context)
+    func = compile(content, init, "exec")
+    exec(func, context)
 
 
 if __name__ == '__main__':
@@ -62,10 +62,8 @@ if __name__ == '__main__':
     data = invoke(eeprom, 'get')
     context = {'__name__': '__main__', '__path__': eeprom}
 
-    try:
-        exec(data, context)
-    except BaseException as e:
-        print(type(e), e)
+    func = compile(data, "<EEPROM>", "exec")
+    exec(func, context)
 
 
 bios()

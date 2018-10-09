@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "py/nlr.h"
 #include "py/runtime.h"
 #include "py/objexcept.h"
@@ -102,7 +104,7 @@ void nlr_jump_fail(void *val) {
 }
 
 void NORETURN __fatal_error(const char *msg) {
-    __syscall2(SYS_CONTROL, SYS_CONTROL_CRASH, (int) msg);
+    __syscall3(SYS_CONTROL, SYS_CONTROL_CRASH, (int) msg, (int) strlen(msg));
     for (;;);
 }
 

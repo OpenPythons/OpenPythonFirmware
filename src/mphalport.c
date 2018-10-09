@@ -41,11 +41,11 @@ void mp_hal_delay_ms(mp_uint_t ms) {
     uint32_t start = mp_hal_ticks_ms();
     uint32_t elapsed = 0;
     while (elapsed < ms) {
-        elapsed = mp_hal_ticks_ms() - start;
         mp_handle_pending();
         int32_t ticks = (ms - elapsed) / (1000 / 20);
         mp_obj_t tick_obj = mp_obj_new_int(ticks < 0? 0 : ticks);
         mp_call_function_1(signal_hook_obj, tick_obj);
+        elapsed = mp_hal_ticks_ms() - start;
     }
 }
 

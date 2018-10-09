@@ -35,7 +35,7 @@ typedef struct _openpie_syscall_result_t {
 #define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
 mp_obj_t usystem_debug(mp_obj_t);
 
-mp_obj_t parse_2(void *ret) {
+mp_obj_t parse_msgpack_result(void *ret) {
     if (ret == NULL) {
         return mp_const_none;
     } else {
@@ -168,7 +168,7 @@ STATIC mp_obj_t usystem_invoke(size_t n_args, const mp_obj_t *args) {
 
     void *result = (void *) __syscall3(SYS_INVOKE, 0, (int) data, (int) size);
 
-    mp_obj_t vals = parse_2(result);
+    mp_obj_t vals = parse_msgpack_result(result);
 
     size_t count = 0;
     mp_obj_t *items = NULL;
@@ -206,18 +206,25 @@ MP_DEFINE_CONST_FUN_OBJ_VAR(usystem_invoke_obj, 2, usystem_invoke);
 STATIC mp_obj_t usystem_signal(mp_obj_t ticks_obj) {
     mp_int_t ticks = mp_obj_get_int(ticks_obj);
     void *result = (void *) __syscall2(SYS_SIGNAL, SYS_SIGNAL_REQUEST, (int) ticks); // sleep with ticks
-    return parse_2(result);
+    return parse_msgpack_result(result);
 }
 
 MP_DEFINE_CONST_FUN_OBJ_1(usystem_signal_obj, usystem_signal);
 
 
-STATIC mp_obj_t usystem_components() {
-    void *result = (byte *) __syscall1(SYS_REQUEST, SYS_REQUEST_COMPONENTS);
-    return parse_2(result);
+STATIC mp_obj_t usystem_components(size_t n_args, const mp_obj_t *args) {
+    if (n_args == 0) {
+        void *result = (byte *) __syscall3(SYS_REQUEST, SYS_REQUEST_COMPONENTS, 0, 0);
+        return parse_msgpack_result(result);
+    } else {
+        size_t len = 0;
+        const char *buf = mp_obj_str_get_data(args[0], &len);
+        void *result = (byte *)__syscall3(SYS_REQUEST, SYS_REQUEST_COMPONENTS, (int) buf, (int) len);
+        return parse_msgpack_result(result);
+    }
 }
 
-MP_DEFINE_CONST_FUN_OBJ_0(usystem_components_obj, usystem_components);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(usystem_components_obj, 0, 1, usystem_components);
 
 
 STATIC mp_obj_t usystem_methods(mp_obj_t address_obj) {
@@ -231,7 +238,7 @@ STATIC mp_obj_t usystem_methods(mp_obj_t address_obj) {
     msgpack_dump_close(writer);
 
     void *result = (void *) __syscall3(SYS_REQUEST, SYS_REQUEST_METHODS, (int) data, (int) size);
-    return parse_2(result);
+    return parse_msgpack_result(result);
 }
 
 MP_DEFINE_CONST_FUN_OBJ_1(usystem_methods_obj, usystem_methods);
@@ -249,7 +256,7 @@ STATIC mp_obj_t usystem_annotations(mp_obj_t address_obj, mp_obj_t method_obj) {
     msgpack_dump_close(writer);
 
     void *result = (void *) __syscall3(SYS_REQUEST, SYS_REQUEST_ANNOTATIONS, (int) data, (int) size);
-    return parse_2(result);
+    return parse_msgpack_result(result);
 }
 
 MP_DEFINE_CONST_FUN_OBJ_2(usystem_annotations_obj, usystem_annotations);
@@ -269,6 +276,16 @@ mp_obj_t usystem_reboot() {
 }
 
 MP_DEFINE_CONST_FUN_OBJ_0(usystem_reboot_obj, usystem_reboot);
+
+
+mp_obj_t usystem_crash(mp_obj_t message_obj) {
+    size_t len = 0;
+    const char *message = mp_obj_str_get_data(message_obj, &len);
+    __syscall3(SYS_CONTROL, SYS_CONTROL_CRASH, (int) message, (int) len);
+    __fatal_error("crash failure");
+}
+
+MP_DEFINE_CONST_FUN_OBJ_1(usystem_crash_obj, usystem_crash);
 
 
 mp_obj_t usystem_debug(mp_obj_t obj) {
@@ -299,6 +316,7 @@ STATIC const mp_rom_map_elem_t machine_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR_annotations),    MP_ROM_PTR(&usystem_annotations_obj)},
         {MP_ROM_QSTR(MP_QSTR_shutdown),       MP_ROM_PTR(&usystem_shutdown_obj)},
         {MP_ROM_QSTR(MP_QSTR_reboot),         MP_ROM_PTR(&usystem_reboot_obj)},
+        {MP_ROM_QSTR(MP_QSTR_crash),          MP_ROM_PTR(&usystem_crash_obj)},
         {MP_ROM_QSTR(MP_QSTR_debug),          MP_ROM_PTR(&usystem_debug_obj)},
 
         {MP_ROM_QSTR(MP_QSTR_mem8),     MP_ROM_PTR(&machine_mem8_obj)},

@@ -50,20 +50,14 @@ int main(int argc, char **argv) {
 #endif
 
         size_t ram_size = (size_t) __syscall1(SYS_INFO, SYS_INFO_RAM_SIZE);
-        gc_init(&_ram_start, (&_ram_start) + ram_size);
+        gc_init(&_ram_start, ((void *)&_ram_start) + ram_size);
 
         mp_init();
         mp_obj_list_init(mp_sys_path, 0);
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
         mp_obj_list_init(mp_sys_argv, 0);
 
-        code = pyexec_frozen_module("_boot.py");
-        if (code != 1) {
-            // error or SystemExit
-            return 1;
-        }
-
-        code = pyexec_frozen_module("_bios.py");
+        code = pyexec_frozen_module("bios.py");
         if (code != 1) {
             // error or SystemExit
             return 1;

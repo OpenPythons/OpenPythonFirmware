@@ -87,13 +87,11 @@ mp_obj_t msgpack_load(mpack_reader_t *reader) {
         case mpack_type_array:
         {
             uint32_t count = tag.v.n;
-            obj = mp_obj_new_list(count, NULL);
-            for (uint32_t i = 0; i < count; i++) {
-                mp_obj_t index = mp_obj_new_int_from_uint(i);
-                mp_obj_t item = msgpack_load(reader);
-                mp_obj_list_store(obj, index, item);
-            }
+            mp_obj_tuple_t *t = mp_obj_new_tuple(count, NULL);
+            for (uint32_t i = 0; i < count; i++)
+                t->items[i] = msgpack_load(reader);
 
+            obj = t;
             mpack_done_array(reader);
             break;
         }

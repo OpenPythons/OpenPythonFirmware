@@ -1,7 +1,7 @@
 def bios():
     globals().pop('bios')
 
-    from machine import invoke, components, crash
+    from ucomputer import invoke, components, crash
 
     eeproms = components("eeprom")
     if not eeproms:
@@ -11,14 +11,20 @@ def bios():
     if True:
         invoke(eeprom, 'setLabel', "EEPROM (micropython)")
         invoke(eeprom, 'set', b"""
-from machine import invoke, components, crash
+from ucomputer import invoke, components, crash, get_computer_address
 from uio import FileIO
 
 
 init = '/init.py'
 
 
+def get_component(t):
+    seq = components(t)
+    return seq[0] if seq else None
+
+
 filesystems = components("filesystem")
+print(filesystems)
 def check_bootable(address):
     return address and address in filesystems and invoke(address, 'exists', init)
 
@@ -48,6 +54,14 @@ def main():
                 break
         else:
             crash("no bootable medium found")
+
+    computer = get_computer_address()
+    invoke(computer, 'beep', 1000, 0.2)
+
+    gpu = get_component("gpu")
+    monitor = get_component("monitor")
+    if gpu and monitor:
+        invoke(gpu, "bind", monitor)
 
     content = load(address)
     context = {'__name__': '__main__', '__path__': address}

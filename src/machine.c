@@ -20,7 +20,7 @@ void _start(void) {
 
 void _exit(int status) {
     for (;;);
-    // __syscall1(SYS_CONTROL, SYS_CONTROL_SHUTDOWN);
+    // __syscall0(SYS_CONTROL_SHUTDOWN);
 }
 
 void Reset_Handler(void) __attribute__((naked));
@@ -70,7 +70,7 @@ void Signal_Handler() {
         __fatal_error("Signal_Handler() fail");
     }
 
-    __syscall1(SYS_CONTROL, SYS_CONTROL_RETURN);
+    __syscall0(SYS_CONTROL_RETURN);
 }
 
 
@@ -81,12 +81,12 @@ void Call_Handler(Handler handler, int a1, int a2, int a3) {
     nlr_buf_t nlr;
     if (nlr_push(&nlr) == 0) {
         int value = handler(a1, a2, a3);
-        __syscall2(SYS_CONTROL, SYS_CONTROL_RETURN, value);
+        __syscall1(SYS_CONTROL_RETURN, value);
         nlr_pop();
     } else {
         // TODO: handle exception
         int value = -1;
-        __syscall2(SYS_CONTROL, SYS_CONTROL_RETURN, value);
+        __syscall1(SYS_CONTROL_RETURN, value);
     }
 }
 
@@ -104,7 +104,7 @@ void nlr_jump_fail(void *val) {
 }
 
 void NORETURN __fatal_error(const char *msg) {
-    __syscall3(SYS_CONTROL, SYS_CONTROL_CRASH, (int) msg, (int) strlen(msg));
+    __syscall2(SYS_CONTROL_CRASH, (int) msg, (int) strlen(msg));
     for (;;);
 }
 

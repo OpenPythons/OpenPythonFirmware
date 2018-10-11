@@ -1,5 +1,4 @@
 #include "py/obj.h"
-#include "modmachine.h"
 
 int mp_hal_stdin_rx_chr(void);
 

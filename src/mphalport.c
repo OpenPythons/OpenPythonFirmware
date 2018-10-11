@@ -57,14 +57,14 @@ void mp_hal_delay_us(mp_uint_t us) {
 }
 
 mp_uint_t mp_hal_ticks_ms(void) {
-    return (mp_uint_t) __syscall1(SYS_TIMER, SYS_TIMER_TICKS_MS);
+    return (mp_uint_t) __syscall0(SYS_TIMER_TICKS_MS);
 }
 
 mp_uint_t mp_hal_ticks_us(void) {
-    return (mp_uint_t) __syscall1(SYS_TIMER, SYS_TIMER_TICKS_US);
+    return (mp_uint_t) __syscall0(SYS_TIMER_TICKS_US);
 }
 
 mp_uint_t mp_hal_ticks_cpu(void) {
     // return OPENPIE_CONTROLLER->INSNS;
-    return 0; // return (mp_uint_t) __syscall1(SYS_TIMER, SYS_TIMER_TICKS_CPU);
+    return 0; // return (mp_uint_t) __syscall0(SYS_TIMER_TICKS_CPU);
 }

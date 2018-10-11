@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
         mp_pystack_init(&pystack, &pystack[MP_ARRAY_SIZE(pystack)]);
 #endif
 
-        size_t ram_size = (size_t) __syscall1(SYS_INFO, SYS_INFO_RAM_SIZE);
+        size_t ram_size = (size_t) __syscall0(SYS_INFO_RAM_SIZE);
         gc_init(&_ram_start, ((void *)&_ram_start) + ram_size);
 
         mp_init();
@@ -99,7 +99,9 @@ int main(int argc, char **argv) {
             vstr_init_print(&vstr, 256, &print);
 
             mp_obj_print_helper(&print, (mp_obj_t) nlr.ret_val, PRINT_EXC);
-            char *message = vstr_null_terminated_str(&vstr);
+            // char *message = vstr_null_terminated_str(&vstr);
+            vstr.buf[vstr.len] = '\0';
+            char *message = vstr.buf;
             __fatal_error(message);
         }
 

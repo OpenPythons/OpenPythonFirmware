@@ -53,6 +53,8 @@ SRC_C = \
 	machine.c \
 	mphalport.c \
 	modmachine.c \
+	moducode.c \
+	moducomputer.c \
 	moduos.c \
 	modutime.c \
 	modumsgpack.c \

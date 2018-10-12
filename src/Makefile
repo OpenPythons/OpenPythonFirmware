@@ -33,7 +33,7 @@ MPY_CROSS_FLAGS += -mcache-lookup-bc
 ifeq ($(DEBUG), 1)
 CFLAGS += -O0 -ggdb
 else
-CFLAGS += -Os -DNDEBUG
+CFLAGS += -O2 -DNDEBUG
 endif
 
 

@@ -30,11 +30,16 @@ Version History:
 
 LOOPS = 50000
 
-from utime import ticks_ms
+try:
+    import computer
 
+    def clock():
+        return computer.cpu_time()
+except ImportError:
+    from utime import ticks_ms
 
-def clock():
-    return ticks_ms() / 1000.0
+    def clock():
+        return ticks_ms() / 1000.0
 
 
 __version__ = "1.2"

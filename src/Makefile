@@ -12,9 +12,7 @@ FIRMWARE = $(BUILD)/firmware
 # include py core make definitions
 include $(TOP)/py/py.mk
 
-# TODO: common CROSS_COMPILE required
-CROSS_COMPILE = /opt/gcc-arm-none-eabi-7-2018-q2-update/bin/arm-none-eabi-
-# CROSS_COMPILE = arm-none-eabi-
+CROSS_COMPILE = arm-none-eabi-
 
 INC += -I.
 INC += -I$(TOP)
@@ -27,7 +25,6 @@ CFLAGS_MCU_m0 = $(CFLAGS_CORTEX_M) -mtune=cortex-m0 -mcpu=cortex-m0 -mfloat-abi=
 CFLAGS = $(INC) -Wall -Werror -std=c99 -nostdlib $(CFLAGS_MCU_m0) $(COPT)
 CFLAGS += -DMP_CONFIGFILE="<mpconfigport.h>"
 CFLAGS += -DMPACK_HAS_CONFIG=1
-CFLAGS += -fno-jump-tables
 
 # when MICROPY_OPT_CACHE_MAP_LOOKUP_IN_BYTECODE = 1
 MPY_CROSS_FLAGS += -mcache-lookup-bc
@@ -38,6 +35,7 @@ CFLAGS += -O0 -ggdb
 else
 CFLAGS += -Os -DNDEBUG
 endif
+
 
 LDFLAGS = -nostdlib -T openpie.ld -Map=$@.map --cref
 LIBS = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)

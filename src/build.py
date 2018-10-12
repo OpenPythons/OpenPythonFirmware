@@ -1,16 +1,12 @@
-import os
-import sys
-import time
+import shutil
 import traceback
-from collections import Container
 from pathlib import Path
 from subprocess import check_call, DEVNULL, CalledProcessError
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Container
 
 from dataclasses import dataclass
 from elftools.elf.elffile import ELFFile
 from elftools.elf.sections import SymbolTableSection, Section, Symbol
-import shutil
 
 FOLDER = Path(__file__).parent
 OPMOD_PATH = FOLDER.parent / "opmod"

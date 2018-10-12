@@ -67,6 +67,9 @@ int main(int argc, char **argv) {
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
         mp_obj_list_init(mp_sys_argv, 0);
 
+        do_str("from pystone import main; main(2000)", MP_PARSE_FILE_INPUT);
+        __syscall0(0xDEADBEEF);
+
         do_frozen("bios.py");
 
         for (;;) {

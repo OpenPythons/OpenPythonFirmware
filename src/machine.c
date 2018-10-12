@@ -32,13 +32,17 @@ void Reset_Handler(void) {
     __asm volatile ("mov sp, r1");
 
     // copy .data section from flash to RAM
-    for (uint32_t *src = &_sidata, *dest = &_sdata; dest < &_edata;) {
-        *dest++ = *src++;
+    if (__syscall3(SYS_CONTROL_INIT_COPY, (int) &_sidata, (int) &_sdata, (int) &_edata) == 0) {
+        for (uint32_t *src = &_sidata, *dest = &_sdata; dest < &_edata;) {
+            *dest++ = *src++;
+        }
     }
 
     // zero out .bss section
-    for (uint32_t *dest = &_sbss; dest < &_ebss;) {
-        *dest++ = 0;
+    if (__syscall2(SYS_CONTROL_INIT_ZERO, (int) &_sbss, (int) &_ebss) == 0) {
+        for (uint32_t *dest = &_sbss; dest < &_ebss;) {
+            *dest++ = 0;
+        }
     }
 
     // OPENPIE_CONTROLLER->PENDING = (uint32_t) &MP_STATE_VM(mp_pending_exception);

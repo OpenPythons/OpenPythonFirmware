@@ -24,7 +24,6 @@ def get_component(t):
 
 
 filesystems = components("filesystem")
-print(filesystems)
 def check_bootable(address):
     return address and address in filesystems and invoke(address, 'exists', init)
 
@@ -43,7 +42,6 @@ def load(address):
         
     content = b"".join(buffer)
     return content.decode()
-
 
 def main():
     address = invoke(__path__, 'getData').decode()

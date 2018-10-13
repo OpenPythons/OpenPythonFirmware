@@ -15,8 +15,6 @@
 #include "syscall.h"
 #include <stdarg.h>
 
-#define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
-
 void debug_printer(void *self, const char *buf, size_t len) {
     __syscall2(SYS_DEBUG, (int) buf, (int) len);
 }

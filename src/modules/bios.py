@@ -1,7 +1,8 @@
 def bios():
     globals().pop('bios')
 
-    from ucomputer import invoke, components, crash
+    from ucomputer import crash
+    from ucomponents import invoke, components
 
     eeproms = components("eeprom")
     if not eeproms:
@@ -11,7 +12,8 @@ def bios():
     if True:
         invoke(eeprom, 'setLabel', "EEPROM (micropython)")
         invoke(eeprom, 'set', b"""
-from ucomputer import invoke, components, crash, get_computer_address
+from ucomputer import crash, get_computer_address
+from ucomponents import invoke, components
 from uio import FileIO
 
 

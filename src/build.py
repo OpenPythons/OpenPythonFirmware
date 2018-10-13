@@ -1,4 +1,6 @@
+import io
 import shutil
+import sys
 import traceback
 from pathlib import Path
 from subprocess import check_call, DEVNULL, CalledProcessError
@@ -8,9 +10,14 @@ from dataclasses import dataclass
 from elftools.elf.elffile import ELFFile
 from elftools.elf.sections import SymbolTableSection, Section, Symbol
 
+import re
+
 FOLDER = Path(__file__).parent
-OPMOD_PATH = FOLDER.parent / "opmod"
-TARGET_FOLDER = OPMOD_PATH / "src/main/resources/assets/openpie/firmwares/debug"  # TODO: place version
+BASE_FOLDER = FOLDER.parent
+OPMOD_PATH = BASE_FOLDER / "opmod"
+SOURCE_SYSCALL_TABLE: Path = OPMOD_PATH / "src/main/java/kr/pe/ecmaxp/openpie/arch/consts/OpenPieSystemCallTable.kt"
+TARGET_SYSCALL_TABLE: Path = FOLDER / "syscall_table.h"
+TARGET_FOLDER: Path = OPMOD_PATH / "src/main/resources/assets/openpie/firmwares/debug"  # TODO: place version
 
 
 @dataclass
@@ -140,7 +147,31 @@ def build(folder: Path = FOLDER, target_folder: Path = TARGET_FOLDER):
     print(target_folder / "firmware.bin")
 
 
+def parse_syscall_table(path: Path, file=sys.stdout):
+    print(f"// syscall_table.h : {path.relative_to(BASE_FOLDER).as_posix()}", file=file)
+    for line in SOURCE_SYSCALL_TABLE.read_text().splitlines():
+        if line.startswith("package "):
+            continue
+
+        line, sep, comment = line.partition("//")
+        line = line.strip()
+        if not line:
+            print(file=file)
+            continue
+
+        m = re.match("^const val (.*?) = (.*)$", line)
+        if not m:
+            continue
+
+        print(f"#define {m.group(1)} ({m.group(2).replace('or', '|')})", file=file)
+
+
 def main():
+    fp = io.StringIO()
+    parse_syscall_table(SOURCE_SYSCALL_TABLE, fp)
+    if not TARGET_SYSCALL_TABLE.exists() or TARGET_SYSCALL_TABLE.read_text() != fp.getvalue():
+        TARGET_SYSCALL_TABLE.write_text(fp.getvalue())
+
     try:
         build()
         return 0

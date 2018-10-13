@@ -13,8 +13,8 @@
 #include <string.h>
 
 mp_obj_t signal_hook_obj = mp_const_none;
-mp_obj_t print_hook_obj = mp_const_none;
-mp_obj_t input_hook_obj = mp_const_none;
+mp_obj_t stdout_hook_obj = mp_const_none;
+mp_obj_t stdin_hook_obj = mp_const_none;
 
 
 mp_obj_t machine_debug(mp_obj_t obj) {
@@ -36,20 +36,20 @@ STATIC mp_obj_t machine_hook_signal(mp_obj_t hook_obj) {
 MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_signal_obj, machine_hook_signal);
 
 
-STATIC mp_obj_t machine_hook_print(mp_obj_t hook_obj) {
-    print_hook_obj = hook_obj;
+STATIC mp_obj_t machine_hook_stdout(mp_obj_t hook_obj) {
+    stdout_hook_obj = hook_obj;
     return hook_obj;
 }
 
-MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_print_obj, machine_hook_print);
+MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_stdout_obj, machine_hook_stdout);
 
-STATIC mp_obj_t machine_hook_input(mp_obj_t hook_obj) {
-    input_hook_obj = hook_obj;
+
+STATIC mp_obj_t machine_hook_stdin(mp_obj_t hook_obj) {
+    stdin_hook_obj = hook_obj;
     return hook_obj;
 }
 
-MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_input_obj, machine_hook_input);
-
+MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_stdin_obj, machine_hook_stdin);
 
 
 STATIC const mp_rom_map_elem_t machine_module_globals_table[] = {
@@ -59,9 +59,9 @@ STATIC const mp_rom_map_elem_t machine_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR_debug),                MP_ROM_PTR(&machine_debug_obj)},
 
         // hook
-        {MP_ROM_QSTR(MP_QSTR_hook_input),           MP_ROM_PTR(&machine_hook_input_obj)},
-        {MP_ROM_QSTR(MP_QSTR_hook_print),           MP_ROM_PTR(&machine_hook_print_obj)},
         {MP_ROM_QSTR(MP_QSTR_hook_signal),          MP_ROM_PTR(&machine_hook_signal_obj)},
+        {MP_ROM_QSTR(MP_QSTR_hook_stdout),          MP_ROM_PTR(&machine_hook_stdout_obj)},
+        {MP_ROM_QSTR(MP_QSTR_hook_stdin),           MP_ROM_PTR(&machine_hook_stdin_obj)},
 };
 
 STATIC MP_DEFINE_CONST_DICT(machine_module_globals, machine_module_globals_table);

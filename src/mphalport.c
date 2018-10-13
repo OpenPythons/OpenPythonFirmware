@@ -8,14 +8,14 @@
 #include "syscall.h"
 
 extern mp_obj_t signal_hook_obj;
-extern mp_obj_t input_hook_obj;
-extern mp_obj_t print_hook_obj;
+extern mp_obj_t stdin_hook_obj;
+extern mp_obj_t stdout_hook_obj;
 
 int mp_hal_stdin_rx_chr(void) {
-    if (input_hook_obj == mp_const_none) {
+    if (stdin_hook_obj == mp_const_none) {
         return 0;
     } else {
-        mp_obj_t obj = mp_call_function_0(input_hook_obj);
+        mp_obj_t obj = mp_call_function_0(stdin_hook_obj);
         return (int) mp_obj_get_int(obj);
     }
 }
@@ -25,11 +25,11 @@ void mp_hal_stdout_tx_str(const char *str) {
 }
 
 void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
-    if (print_hook_obj == mp_const_none) {
+    if (stdout_hook_obj == mp_const_none) {
         __syscall2(SYS_DEBUG, (int)str, (int)len);
     } else {
         mp_obj_t str_obj = mp_obj_new_str(str, len);
-        mp_call_function_1(print_hook_obj, str_obj);
+        mp_call_function_1(stdout_hook_obj, str_obj);
     }
 }
 

@@ -6,11 +6,11 @@ def debug(arg: str):
     pass
 
 
-def hook_input(func):
+def hook_stdin(func):
     pass
 
 
-def hook_print(func):
+def hook_stdout(func):
     pass
 
 

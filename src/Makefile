@@ -18,7 +18,6 @@ INC += -I.
 INC += -I$(TOP)
 INC += -I$(BUILD)
 
-
 CFLAGS_CORTEX_M = -mthumb -fsingle-precision-constant -Wdouble-promotion
 CFLAGS_MCU_m0 = $(CFLAGS_CORTEX_M) -mtune=cortex-m0 -mcpu=cortex-m0 -mfloat-abi=soft
 
@@ -52,13 +51,16 @@ SRC_C = \
 	mphalport.c \
 	modmachine.c \
 	moducode.c \
+	moducomponents.c \
 	moducomputer.c \
 	moduos.c \
 	modutime.c \
 	modumsgpack.c \
+	moduvalue.c \
 	gccollect.c \
 	openpie_vfs.c \
 	msgpack.c \
+	syscall.c \
 
 SRC_S = \
 	gchelper_m0.s \

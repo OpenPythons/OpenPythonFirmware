@@ -38,5 +38,5 @@ class BytesIO(typing.BinaryIO):
         pass
 
 
-def resource_stream():
+def resource_stream(package, filename):
     pass

@@ -39,8 +39,6 @@
 
 #if MICROPY_OPENPIE_VFS
 
-#define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
-
 
 typedef struct _mp_obj_vfs_openpie_file_t {
     mp_obj_base_t base;

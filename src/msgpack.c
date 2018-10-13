@@ -1,11 +1,15 @@
+#include <string.h>
+
 #include "py/obj.h"
 #include "py/objstr.h"
 #include "py/gc.h"
 #include "py/runtime.h"
 #include "lib/mpack/mpack.h"
-#include <string.h>
 #include "syscall.h"
-#define _debug(s) __syscall2(SYS_DEBUG, (int)s, (int)strlen(s));
+#include "msgpack.h"
+#include "uvalue.h"
+
+mp_obj_t oc_create_value(mp_obj_t raw_value_obj);
 
 mp_obj_t msgpack_load(mpack_reader_t *reader) {
     mpack_tag_t tag = mpack_read_tag(reader);
@@ -81,9 +85,6 @@ mp_obj_t msgpack_load(mpack_reader_t *reader) {
             mpack_done_bin(reader);
             break;
         }
-        case mpack_type_ext:
-            mp_raise_ValueError("invalid tag (ext)");
-            break;
         case mpack_type_array:
         {
             uint32_t count = tag.v.n;
@@ -106,6 +107,26 @@ mp_obj_t msgpack_load(mpack_reader_t *reader) {
             }
 
             mpack_done_array(reader);
+            break;
+        }
+        case mpack_type_ext:
+        {
+            int8_t exttype = tag.exttype;
+            uint32_t length = tag.v.l;
+
+            switch (exttype) {
+                case 1: // OpenComputer.Value
+                {
+                    const char *buf = mpack_read_bytes_inplace(reader, length);
+                    obj = msgpack_loads(buf, length);
+                    obj = oc_create_value(obj);
+                    break;
+                }
+                default:
+                    mp_raise_ValueError("invalid ext");
+            }
+
+            mpack_done_ext(reader);
             break;
         }
         default:
@@ -194,6 +215,15 @@ void msgpack_dump(mpack_writer_t *writer, mp_obj_t obj) {
             }
         }
         mpack_finish_map(writer);
+    } else if (CHECK(uvalue_type)) {
+        uvalue_obj_t *uvalue = (uvalue_obj_t *)obj;
+        size_t size = 0;
+        byte *buffer = NULL;
+
+        msgpack_dumps(uvalue->value, &buffer, &size);
+
+        int UVALUE_TYPE = 1;
+        mpack_write_ext(writer, UVALUE_TYPE, (const char *)buffer, size);
     } else {
         mp_raise_TypeError(NULL);
     }

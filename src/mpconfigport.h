@@ -244,19 +244,22 @@ extern const struct _mp_obj_type_t mp_type_SystemError;
 // Modules
 extern const struct _mp_obj_module_t mp_module_machine;
 extern const struct _mp_obj_module_t mp_module_ucode;
+extern const struct _mp_obj_module_t mp_module_ucomponents;
 extern const struct _mp_obj_module_t mp_module_ucomputer;
 extern const struct _mp_obj_module_t mp_module_uos;
 extern const struct _mp_obj_module_t mp_module_utime;
-extern const struct _mp_obj_module_t mp_module_usystem;
 extern const struct _mp_obj_module_t mp_module_umsgpack;
+extern const struct _mp_obj_module_t mp_module_uvalue;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_ROM_QSTR(MP_QSTR_machine), MP_ROM_PTR(&mp_module_machine) }, \
     { MP_ROM_QSTR(MP_QSTR_ucode), MP_ROM_PTR(&mp_module_ucode) }, \
+    { MP_ROM_QSTR(MP_QSTR_ucomponents), MP_ROM_PTR(&mp_module_ucomponents) }, \
     { MP_ROM_QSTR(MP_QSTR_ucomputer), MP_ROM_PTR(&mp_module_ucomputer) }, \
     { MP_ROM_QSTR(MP_QSTR_uos), MP_ROM_PTR(&mp_module_uos) }, \
     { MP_ROM_QSTR(MP_QSTR_utime), MP_ROM_PTR(&mp_module_utime) }, \
     { MP_ROM_QSTR(MP_QSTR_umsgpack), MP_ROM_PTR(&mp_module_umsgpack) }, \
+    { MP_ROM_QSTR(MP_QSTR_uvalue), MP_ROM_PTR(&mp_module_uvalue) }, \
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS
 

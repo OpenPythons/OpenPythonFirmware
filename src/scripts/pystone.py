@@ -31,10 +31,10 @@ Version History:
 LOOPS = 50000
 
 try:
-    import computer
+    from utime import time_cpu
 
     def clock():
-        return computer.cpu_time()
+        return time_cpu()
 except ImportError:
     from utime import ticks_ms
 

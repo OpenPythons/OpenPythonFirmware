@@ -4,8 +4,8 @@
 #include "msgpack.h"
 
 
-mp_obj_t wrap_result(int retcode) {
-    void *ret = (void *) retcode;
+mp_obj_t wrap_result(int code) {
+    void *ret = (void *) code;
     if (ret == NULL) {
         return mp_const_none;
     } else {

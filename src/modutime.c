@@ -8,7 +8,7 @@
 #include "extmod/utime_mphal.h"
 #include "syscall.h"
 
-mp_obj_t wrap_result(int retcode);
+mp_obj_t wrap_result(int code);
 
 
 STATIC mp_obj_t utime_time_world() {

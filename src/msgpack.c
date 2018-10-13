@@ -217,13 +217,10 @@ void msgpack_dump(mpack_writer_t *writer, mp_obj_t obj) {
         mpack_finish_map(writer);
     } else if (CHECK(uvalue_type)) {
         uvalue_obj_t *uvalue = (uvalue_obj_t *)obj;
-        size_t size = 0;
-        byte *buffer = NULL;
-
-        msgpack_dumps(uvalue->value, &buffer, &size);
 
         int UVALUE_TYPE = 1;
-        mpack_write_ext(writer, UVALUE_TYPE, (const char *)buffer, size);
+        msgpack_result_t result = msgpack_dumps(uvalue->value);
+        mpack_write_ext(writer, UVALUE_TYPE, (const char *)result.data, result.size);
     } else {
         mp_raise_TypeError(NULL);
     }
@@ -246,8 +243,22 @@ void msgpack_dump_close(mpack_writer_t *writer) {
     }
 }
 
-void msgpack_dumps(mp_obj_t obj, byte **data, size_t *size) {
-    mpack_writer_t *writer = msgpack_dump_new(data, size);
+msgpack_result_t msgpack_dumps(mp_obj_t obj) {
+    msgpack_result_t result = {NULL, 0};
+    mpack_writer_t *writer = msgpack_dump_new(&result.data, &result.size);
     msgpack_dump(writer, obj);
     msgpack_dump_close(writer);
+    return result;
+}
+
+
+msgpack_result_t msgpack_args_dumps(size_t n_args, const mp_obj_t *args) {
+    msgpack_result_t result = {NULL, 0};
+    mpack_writer_t *writer = msgpack_dump_new(&result.data, &result.size);
+    mpack_start_array(writer, n_args);
+    for (int i = 0; i < n_args; i++)
+        msgpack_dump(writer, args[i]);
+    mpack_finish_array(writer);
+    msgpack_dump_close(writer);
+    return result;
 }

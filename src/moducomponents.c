@@ -13,7 +13,7 @@
 #include <string.h>
 
 
-mp_obj_t wrap_result(int retcode);
+mp_obj_t wrap_result(int code);
 
 
 STATIC mp_obj_t ucomponents_components(size_t n_args, const mp_obj_t *args) {
@@ -44,50 +44,26 @@ MP_DEFINE_CONST_FUN_OBJ_0(ucomponents_max_components_obj, ucomponents_max_compon
 
 
 STATIC mp_obj_t ucomponents_methods(mp_obj_t address_obj) {
-    byte *data = NULL;
-    size_t size = 0;
-
-    mpack_writer_t *writer = msgpack_dump_new(&data, &size);
-    mpack_start_array(writer, 1);
-        msgpack_dump(writer, address_obj);
-    mpack_finish_array(writer);
-    msgpack_dump_close(writer);
-
-    return wrap_result(__syscall2(SYS_COMPONENTS_METHODS, (int) data, (int) size));
+    mp_obj_t items[] = {address_obj};
+    msgpack_result_t result = msgpack_args_dumps(1, items);
+    return wrap_result(__syscall2(SYS_COMPONENTS_METHODS, (int)result.data, (int)result.size));
 }
 
 MP_DEFINE_CONST_FUN_OBJ_1(ucomponents_methods_obj, ucomponents_methods);
 
 
-STATIC mp_obj_t ucomponents_annotations(mp_obj_t address_obj, mp_obj_t method_obj) {
-    byte *data = NULL;
-    size_t size = 0;
-
-    mpack_writer_t *writer = msgpack_dump_new(&data, &size);
-    mpack_start_array(writer, 2);
-        msgpack_dump(writer, address_obj);
-        msgpack_dump(writer, method_obj);
-    mpack_finish_array(writer);
-    msgpack_dump_close(writer);
-
-    return wrap_result(__syscall2(SYS_COMPONENTS_ANNOTATIONS, (int) data, (int) size));
+STATIC mp_obj_t ucomponents_doc(mp_obj_t address_obj, mp_obj_t method_obj) {
+    mp_obj_t items[] = {address_obj, method_obj};
+    msgpack_result_t result = msgpack_args_dumps(2, items);
+    return wrap_result(__syscall2(SYS_COMPONENTS_DOC, (int)result.data, (int)result.size));
 }
 
-MP_DEFINE_CONST_FUN_OBJ_2(ucomponents_annotations_obj, ucomponents_annotations);
+MP_DEFINE_CONST_FUN_OBJ_2(ucomponents_doc_obj, ucomponents_doc);
 
 
 STATIC mp_obj_t ucomponents_invoke(size_t n_args, const mp_obj_t *args) {
-    byte *data = NULL;
-    size_t size = 0;
-
-    mpack_writer_t *writer = msgpack_dump_new(&data, &size);
-    mpack_start_array(writer, n_args);
-    for (int i = 0; i < n_args; i++)
-        msgpack_dump(writer, args[i]);
-    mpack_finish_array(writer);
-    msgpack_dump_close(writer);
-
-    mp_obj_t values = wrap_result(__syscall2(SYS_COMPONENTS_INVOKE, (int) data, (int) size));
+    msgpack_result_t result = msgpack_args_dumps(n_args, args);
+    mp_obj_t values = wrap_result(__syscall2(SYS_COMPONENTS_INVOKE, (int)result.data, (int)result.size));
     if (values == mp_const_none)
         return mp_const_none;
 
@@ -113,7 +89,7 @@ STATIC const mp_rom_map_elem_t ucomponents_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR_component_count),      MP_ROM_PTR(&ucomponents_component_count_obj)},
         {MP_ROM_QSTR(MP_QSTR_max_components),       MP_ROM_PTR(&ucomponents_max_components_obj)},
         {MP_ROM_QSTR(MP_QSTR_methods),              MP_ROM_PTR(&ucomponents_methods_obj)},
-        {MP_ROM_QSTR(MP_QSTR_annotations),          MP_ROM_PTR(&ucomponents_annotations_obj)},
+        {MP_ROM_QSTR(MP_QSTR_doc),                  MP_ROM_PTR(&ucomponents_doc_obj)},
 
         // invoke
         {MP_ROM_QSTR(MP_QSTR_invoke),               MP_ROM_PTR(&ucomponents_invoke_obj)},

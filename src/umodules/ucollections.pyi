@@ -24,7 +24,7 @@ def methods(address: str) -> List[str]:
     pass
 
 
-def annotations(address: str, method: str) -> str:
+def doc(address: str, method: str) -> str:
     pass
 
 

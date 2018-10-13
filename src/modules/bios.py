@@ -11,7 +11,7 @@ def bios():
     eeprom = eeproms[0]
     if True:
         invoke(eeprom, 'setLabel', "EEPROM (micropython)")
-        invoke(eeprom, 'set', b"""
+        invoke(eeprom, 'set', b"""#!micropython
 from ucomputer import crash, get_computer_address
 from ucomponents import invoke, components
 from uio import FileIO
@@ -31,16 +31,17 @@ def check_bootable(address):
 
 
 def load(address):
-    file = invoke(address, 'open', init, 'r')
+    handle = invoke(address, 'open', init, 'r')
     
     try:
         buffer = []
         while True:
-            buf = invoke(address, 'read', file, 4096)
+            buf = invoke(address, 'read', handle, 4096)
             if not buf: break
             buffer.append(buf)
     finally:
-        invoke(address, 'close', file)
+        invoke(address, 'close', handle)
+        handle.dispose()
         
     content = b"".join(buffer)
     return content.decode()

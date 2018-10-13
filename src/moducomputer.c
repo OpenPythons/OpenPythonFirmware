@@ -13,7 +13,7 @@
 #include <string.h>
 
 
-mp_obj_t wrap_result(int retcode);
+mp_obj_t wrap_result(int code);
 
 mp_obj_t ucomputer_debug(mp_obj_t);
 
@@ -45,17 +45,8 @@ MP_DEFINE_CONST_FUN_OBJ_1(ucomputer_crash_obj, ucomputer_crash);
 
 
 STATIC mp_obj_t ucomputer_push_signal(size_t n_args, const mp_obj_t *args) {
-    byte *data = NULL;
-    size_t size = 0;
-
-    mpack_writer_t *writer = msgpack_dump_new(&data, &size);
-    mpack_start_array(writer, n_args);
-    for (int i = 0; i < n_args; i++)
-        msgpack_dump(writer, args[i]);
-    mpack_finish_array(writer);
-    msgpack_dump_close(writer);
-
-    return wrap_result(__syscall2(SYS_SIGNAL_PUSH, (int) data, (int) size));
+    msgpack_result_t result = msgpack_args_dumps(n_args, args);
+    return wrap_result(__syscall2(SYS_SIGNAL_PUSH, (int)result.data, (int)result.size));
 }
 
 MP_DEFINE_CONST_FUN_OBJ_VAR(ucomputer_push_signal_obj, 1, ucomputer_push_signal);

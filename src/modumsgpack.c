@@ -8,10 +8,8 @@
 #include "lib/mpack/mpack.h"
 
 mp_obj_t umsgpack_dumps(mp_obj_t obj) {
-    byte *data;
-    size_t size;
-    msgpack_dumps(obj, &data, &size);
-    return mp_obj_new_bytes(data, size);
+    msgpack_result_t result = msgpack_dumps(obj);
+    return mp_obj_new_bytes(result.data, result.size);
 }
 
 MP_DEFINE_CONST_FUN_OBJ_1(umsgpack_dumps_obj, umsgpack_dumps);

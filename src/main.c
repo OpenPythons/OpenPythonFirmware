@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdarg.h>
 
 #include "py/obj.h"
 #include "py/compile.h"
@@ -13,7 +14,6 @@
 #include "gccollect.h"
 #include "machine.h"
 #include "syscall.h"
-#include <stdarg.h>
 
 void debug_printer(void *self, const char *buf, size_t len) {
     __syscall2(SYS_DEBUG, (int) buf, (int) len);

@@ -1,25 +1,12 @@
-#include <stdio.h>
-
+#include "py/obj.h"
+#include "py/mphal.h"
+#include "py/runtime.h"
 #include "py/lexer.h"
 #include "py/compile.h"
 #include "py/parse.h"
 #include "py/repl.h"
 #include "lib/utils/pyexec.h"
 #include "lib/mp-readline/readline.h"
-
-#include "py/obj.h"
-#include "py/objstr.h"
-#include "py/runtime.h"
-#include "openpie_vfs.h"
-#include "syscall.h"
-#include "msgpack.h"
-#include "py/mphal.h"
-#include "machine.h"
-#include "extmod/machine_mem.h"
-#include "lib/mpack/mpack.h"
-
-#include <stdio.h>
-#include <string.h>
 
 
 #define EXEC_FLAG_PRINT_EOF (1)

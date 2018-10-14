@@ -1,24 +1,13 @@
-#include <stdio.h>
-
 #include "py/obj.h"
-#include "py/objstr.h"
-#include "py/runtime.h"
-#include "py/mphal.h"
-#include "syscall.h"
-#include "msgpack.h"
 #include "machine.h"
-#include "lib/mpack/mpack.h"
-
-#include <stdio.h>
-#include <string.h>
-
+#include "msgpack.h"
+#include "syscall.h"
 
 mp_obj_t wrap_result(int code);
 
-mp_obj_t ucomputer_debug(mp_obj_t);
 
 
-mp_obj_t ucomputer_shutdown() {
+STATIC mp_obj_t ucomputer_shutdown() {
     __syscall0(SYS_CONTROL_SHUTDOWN);
     __fatal_error("shutdown failure");
 }
@@ -26,7 +15,7 @@ mp_obj_t ucomputer_shutdown() {
 MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_shutdown_obj, ucomputer_shutdown);
 
 
-mp_obj_t ucomputer_reboot() {
+STATIC mp_obj_t ucomputer_reboot() {
     __syscall0(SYS_CONTROL_REBOOT);
     __fatal_error("reboot failure");
 }
@@ -34,7 +23,7 @@ mp_obj_t ucomputer_reboot() {
 MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_reboot_obj, ucomputer_reboot);
 
 
-mp_obj_t ucomputer_crash(mp_obj_t message_obj) {
+STATIC mp_obj_t ucomputer_crash(mp_obj_t message_obj) {
     size_t len = 0;
     const char *message = mp_obj_str_get_data(message_obj, &len);
     __syscall2(SYS_CONTROL_CRASH, (int) message, (int) len);

@@ -1,0 +1,21 @@
+#include "py/obj.h"
+
+
+STATIC mp_obj_t uimp_new_module(mp_obj_t name_obj) {
+    return mp_obj_new_module(name_obj);
+}
+
+MP_DEFINE_CONST_FUN_OBJ_1(uimp_new_module_obj, uimp_new_module);
+
+
+STATIC const mp_rom_map_elem_t uimp_module_globals_table[] = {
+        {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_uimp)},
+
+        {MP_ROM_QSTR(MP_QSTR_new_module),      MP_ROM_PTR(&uimp_new_module_obj)},
+};
+STATIC MP_DEFINE_CONST_DICT(uimp_module_globals, uimp_module_globals_table);
+
+const mp_obj_module_t mp_module_uimp = {
+        .base = {&mp_type_module},
+        .globals = (mp_obj_dict_t *) &ucode_module_globals,
+};

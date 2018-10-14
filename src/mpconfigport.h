@@ -247,6 +247,7 @@ extern const struct _mp_obj_module_t mp_module_ucode;
 extern const struct _mp_obj_module_t mp_module_ucomponents;
 extern const struct _mp_obj_module_t mp_module_ucomputer;
 extern const struct _mp_obj_module_t mp_module_uos;
+extern const struct _mp_obj_module_t mp_module_uimp;
 extern const struct _mp_obj_module_t mp_module_utime;
 extern const struct _mp_obj_module_t mp_module_umsgpack;
 extern const struct _mp_obj_module_t mp_module_uvalue;
@@ -257,6 +258,7 @@ extern const struct _mp_obj_module_t mp_module_uvalue;
     { MP_ROM_QSTR(MP_QSTR_ucomponents), MP_ROM_PTR(&mp_module_ucomponents) }, \
     { MP_ROM_QSTR(MP_QSTR_ucomputer), MP_ROM_PTR(&mp_module_ucomputer) }, \
     { MP_ROM_QSTR(MP_QSTR_uos), MP_ROM_PTR(&mp_module_uos) }, \
+    { MP_ROM_QSTR(MP_QSTR_uimp), MP_ROM_PTR(&mp_module_uimp) }, \
     { MP_ROM_QSTR(MP_QSTR_utime), MP_ROM_PTR(&mp_module_utime) }, \
     { MP_ROM_QSTR(MP_QSTR_umsgpack), MP_ROM_PTR(&mp_module_umsgpack) }, \
     { MP_ROM_QSTR(MP_QSTR_uvalue), MP_ROM_PTR(&mp_module_uvalue) }, \

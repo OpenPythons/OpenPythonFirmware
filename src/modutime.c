@@ -1,11 +1,6 @@
-#include <stdio.h>
-#include <string.h>
-
-#include "py/nlr.h"
-#include "py/smallint.h"
 #include "py/obj.h"
-#include "lib/timeutils/timeutils.h"
 #include "extmod/utime_mphal.h"
+#include "lib/timeutils/timeutils.h"
 #include "syscall.h"
 
 mp_obj_t wrap_result(int code);

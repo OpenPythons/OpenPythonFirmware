@@ -1,11 +1,6 @@
-#include <stdio.h>
-#include <string.h>
-
 #include "py/obj.h"
-#include "py/objstr.h"
 #include "py/runtime.h"
 #include "msgpack.h"
-#include "lib/mpack/mpack.h"
 
 mp_obj_t umsgpack_dumps(mp_obj_t obj) {
     msgpack_result_t result = msgpack_dumps(obj);

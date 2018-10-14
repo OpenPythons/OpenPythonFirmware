@@ -1,17 +1,6 @@
-#include <stdio.h>
-
 #include "py/obj.h"
-#include "py/objstr.h"
-#include "py/runtime.h"
-#include "py/mphal.h"
-#include "syscall.h"
 #include "msgpack.h"
-#include "machine.h"
-#include "lib/mpack/mpack.h"
-
-#include <stdio.h>
-#include <string.h>
-
+#include "syscall.h"
 
 mp_obj_t wrap_result(int code);
 

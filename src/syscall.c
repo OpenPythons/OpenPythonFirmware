@@ -26,9 +26,6 @@ mp_obj_t wrap_result(int code) {
             }
             case 1: // OK (msgpack)
                 return msgpack_loads((const char *)result->buf, result->len);
-            case 2: // OK (int)
-                // return msgpack_loads((const char *)result->buf, result->len);
-                return mp_const_none; // NIY
             default:
             {
                 mp_obj_t exc = mp_obj_new_exception_arg1(&mp_type_SystemError,

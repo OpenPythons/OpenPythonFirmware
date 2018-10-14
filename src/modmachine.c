@@ -1,16 +1,8 @@
-#include <stdio.h>
-
 #include "py/obj.h"
-#include "py/objstr.h"
 #include "py/runtime.h"
 #include "py/mphal.h"
-#include "syscall.h"
-#include "machine.h"
 #include "extmod/machine_mem.h"
-#include "lib/mpack/mpack.h"
-
-#include <stdio.h>
-#include <string.h>
+#include "syscall.h"
 
 mp_obj_t signal_hook_obj = mp_const_none;
 mp_obj_t stdout_hook_obj = mp_const_none;

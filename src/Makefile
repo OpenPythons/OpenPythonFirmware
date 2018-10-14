@@ -54,6 +54,7 @@ SRC_C = \
 	moducomponents.c \
 	moducomputer.c \
 	moduos.c \
+	moduimp.c \
 	modutime.c \
 	modumsgpack.c \
 	moduvalue.c \

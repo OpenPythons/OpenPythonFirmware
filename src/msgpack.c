@@ -2,12 +2,11 @@
 
 #include "py/obj.h"
 #include "py/objstr.h"
-#include "py/gc.h"
 #include "py/runtime.h"
 #include "lib/mpack/mpack.h"
-#include "syscall.h"
 #include "msgpack.h"
 #include "uvalue.h"
+#include "syscall.h"
 
 mp_obj_t oc_create_value(mp_obj_t raw_value_obj);
 

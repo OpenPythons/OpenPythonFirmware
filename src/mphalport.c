@@ -65,6 +65,5 @@ mp_uint_t mp_hal_ticks_us(void) {
 }
 
 mp_uint_t mp_hal_ticks_cpu(void) {
-    // return OPENPIE_CONTROLLER->INSNS;
-    return 0; // return (mp_uint_t) __syscall0(SYS_TIMER_TICKS_CPU);
+    return (mp_uint_t) __syscall0(SYS_TIMER_TICKS_CPU);
 }

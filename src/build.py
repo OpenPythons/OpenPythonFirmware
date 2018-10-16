@@ -144,6 +144,7 @@ def build(folder: Path = FOLDER, target_folder: Path = TARGET_FOLDER):
     shutil.copyfile(str(build_path / "firmware.bin"), str(target_folder / "firmware.bin"))
     shutil.copyfile(str(build_path / "firmware.elf"), str(target_folder / "firmware.elf"))
     shutil.copyfile(str(build_path / "firmware.elf.map"), str(target_folder / "firmware.elf.map"))
+    shutil.copyfile(str(folder / "eeprom.py"), str(target_folder / "eeprom.py"))
     print(target_folder / "firmware.bin")
 
 

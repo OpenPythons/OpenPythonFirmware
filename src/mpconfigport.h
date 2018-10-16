@@ -203,7 +203,7 @@ extern const struct _mp_print_t debug_print;
 #define INT_FMT "%d"
 
 // Machine settings
-#define MICROPY_HW_BOARD_NAME "openpie"
+#define MICROPY_HW_BOARD_NAME "OpenPie"
 #define MICROPY_HW_MCU_NAME "Cortex-M0"
 #define MICROPY_OPENPIE_VFS (1)
 

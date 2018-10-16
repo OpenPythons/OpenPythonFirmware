@@ -54,52 +54,44 @@ void Reset_Handler(void) {
 }
 
 
-STATIC mp_obj_t signal_hook0(mp_obj_t none_obj) {
-    mp_call_function_1(signal_hook_obj, MP_OBJ_NEW_SMALL_INT(0));
-    return mp_const_none;
-}
-
-MP_DEFINE_CONST_FUN_OBJ_1(signal_hook0_obj, signal_hook0);
-
-
-void Signal_Handler() {
+int Call_Handler(void *handler, int n_args, int *args) {
     nlr_buf_t nlr;
     if (nlr_push(&nlr) == 0) {
-        if (signal_hook_obj != mp_const_none) {
-            mp_sched_schedule((mp_obj_t)&signal_hook0_obj, mp_const_none);
+        int result = 0;
+        switch (n_args) {
+            case 0:
+                result = ((int (*)())handler)();
+                break;
+            case 1:
+                result = ((int (*)(int))handler)(args[0]);
+                break;
+            case 2:
+                result = ((int (*)(int, int))handler)(args[0], args[1]);
+                break;
+            case 3:
+                result = ((int (*)(int, int, int))handler)(args[0], args[1], args[2]);
+                break;
+            case 4:
+                result = ((int (*)(int, int, int, int))handler)(args[0], args[1], args[2], args[3]);
+                break;
+            default:
+                __fatal_error("invalid n_args");
         }
 
         nlr_pop();
+        __syscall1(SYS_CONTROL_RETURN, result);
     } else {
-        __fatal_error("Signal_Handler() fail");
+        __syscall1(SYS_CONTROL_RETURN, 0);
     }
 
-    __syscall0(SYS_CONTROL_RETURN);
+    __fatal_error("invalid control");
 }
 
-
-typedef int (*Handler)(int, int, int);
-
-void Call_Handler(Handler handler, int a1, int a2, int a3) {
-    __fatal_error("call handler called");
-    nlr_buf_t nlr;
-    if (nlr_push(&nlr) == 0) {
-        int value = handler(a1, a2, a3);
-        __syscall1(SYS_CONTROL_RETURN, value);
-        nlr_pop();
-    } else {
-        // TODO: handle exception
-        int value = -1;
-        __syscall1(SYS_CONTROL_RETURN, value);
-    }
-}
 
 const uint32_t startup_vector[] __attribute__((section(".startup"))) = {
         (uint32_t) &_estack,
         (uint32_t) &Reset_Handler,
-        (uint32_t) &Signal_Handler,
         (uint32_t) &Call_Handler,
-        // TODO: increase memory size
         // TODO: add custom handler for detect failure (or just turn off computer?)
 };
 

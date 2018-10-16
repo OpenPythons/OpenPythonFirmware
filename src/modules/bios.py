@@ -9,7 +9,7 @@ def bios():
         crash("no bios found; install a configured EEPROM with Python")
 
     eeprom = eeproms[0]
-    if True:
+    if False:
         invoke(eeprom, 'setLabel', "EEPROM (micropython)")
         invoke(eeprom, 'set', b"""#!micropython
 from ucomputer import crash, get_computer_address

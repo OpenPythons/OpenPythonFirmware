@@ -51,7 +51,8 @@ def main():
     if not check_bootable(address):
         invoke(__path__, 'setData', b'')
         for address in filesystems:
-            if check_bootable(address):
+            if check_bootable(address):    
+                invoke(__path__, 'setData', address.encode())
                 break
         else:
             crash("no bootable medium found")

@@ -21,6 +21,13 @@ void debug_printer(void *self, const char *buf, size_t len) {
 
 const struct _mp_print_t debug_print = {NULL, debug_printer};
 
+void mp_init_port() {
+    MP_STATE_PORT(object_hook_obj) = mp_const_none;
+    MP_STATE_PORT(signal_hook_obj) = mp_const_none;
+    MP_STATE_PORT(stdin_hook_obj) = mp_const_none;
+    MP_STATE_PORT(stdout_hook_obj) = mp_const_none;
+}
+
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;
     if (nlr_push(&nlr) == 0) {
@@ -61,6 +68,7 @@ int main(int argc, char **argv) {
         gc_init(&_ram_start, ((void *)&_ram_start) + ram_size);
 
         mp_init();
+        mp_init_port();
         mp_obj_list_init(mp_sys_path, 0);
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
         mp_obj_list_init(mp_sys_argv, 0);

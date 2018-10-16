@@ -4,10 +4,6 @@
 #include "extmod/machine_mem.h"
 #include "syscall.h"
 
-mp_obj_t signal_hook_obj = mp_const_none;
-mp_obj_t stdout_hook_obj = mp_const_none;
-mp_obj_t stdin_hook_obj = mp_const_none;
-
 
 mp_obj_t machine_debug(mp_obj_t obj) {
     size_t len = 0;
@@ -21,7 +17,7 @@ MP_DEFINE_CONST_FUN_OBJ_1(machine_debug_obj, machine_debug);
 
 
 STATIC mp_obj_t machine_hook_signal(mp_obj_t hook_obj) {
-    signal_hook_obj = hook_obj;
+    MP_STATE_PORT(signal_hook_obj) = hook_obj;
     return hook_obj;
 }
 
@@ -29,7 +25,7 @@ MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_signal_obj, machine_hook_signal);
 
 
 STATIC mp_obj_t machine_hook_stdout(mp_obj_t hook_obj) {
-    stdout_hook_obj = hook_obj;
+    MP_STATE_PORT(stdout_hook_obj) = hook_obj;
     return hook_obj;
 }
 
@@ -37,7 +33,7 @@ MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_stdout_obj, machine_hook_stdout);
 
 
 STATIC mp_obj_t machine_hook_stdin(mp_obj_t hook_obj) {
-    stdin_hook_obj = hook_obj;
+    MP_STATE_PORT(stdin_hook_obj) = hook_obj;
     return hook_obj;
 }
 

@@ -8,9 +8,6 @@
 mp_obj_t wrap_result(int code);
 
 
-mp_obj_t object_hook_obj = mp_const_none;
-
-
 STATIC mp_obj_t uvalue_dispose(mp_obj_t raw_value_obj) {
     uvalue_obj_t *self = MP_OBJ_TO_PTR(raw_value_obj);
     if (self->value != mp_const_none) {
@@ -66,16 +63,16 @@ mp_obj_t uvalue_new(mp_obj_t value) {
 
 mp_obj_t oc_create_value(mp_obj_t raw_value_obj) {
     mp_obj_t value_obj = uvalue_new(raw_value_obj);
-    if (object_hook_obj == mp_const_none) {
+    if (MP_STATE_PORT(object_hook_obj) == mp_const_none) {
         return value_obj;
     }
 
-    return mp_call_function_1(object_hook_obj, value_obj);
+    return mp_call_function_1(MP_STATE_PORT(object_hook_obj), value_obj);
 }
 
 
 STATIC mp_obj_t uvalue_hook_value(mp_obj_t hook_obj) {
-    object_hook_obj = hook_obj;
+    MP_STATE_PORT(object_hook_obj) = hook_obj;
     return hook_obj;
 }
 

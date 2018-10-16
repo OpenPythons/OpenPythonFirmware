@@ -1,4 +1,5 @@
 #include "py/obj.h"
+#include "py/objstr.h"
 #include "py/mphal.h"
 #include "py/runtime.h"
 #include "py/lexer.h"
@@ -7,6 +8,7 @@
 #include "py/repl.h"
 #include "lib/utils/pyexec.h"
 #include "lib/mp-readline/readline.h"
+#include "genhdr/mpversion.h"
 
 
 #define EXEC_FLAG_PRINT_EOF (1)
@@ -91,13 +93,25 @@ STATIC mp_obj_t ucode_repl_call(mp_obj_t func, mp_obj_t locals_obj) {
 MP_DEFINE_CONST_FUN_OBJ_2(ucode_repl_call_obj, ucode_repl_call);
 
 
+STATIC const MP_DEFINE_STR_OBJ(ucode_MICROPY_GIT_TAG_obj, MICROPY_GIT_TAG);
+STATIC const MP_DEFINE_STR_OBJ(ucode_MICROPY_BUILD_DATE_obj, MICROPY_BUILD_DATE);
+STATIC const MP_DEFINE_STR_OBJ(ucode_MICROPY_HW_BOARD_NAME_obj, MICROPY_HW_BOARD_NAME);
+STATIC const MP_DEFINE_STR_OBJ(ucode_MICROPY_HW_MCU_NAME_obj, MICROPY_HW_MCU_NAME);
+
+
 STATIC const mp_rom_map_elem_t ucode_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_ucode)},
 
-        {MP_ROM_QSTR(MP_QSTR_repl_input),     MP_ROM_PTR(&ucode_repl_input_obj)},
-        {MP_ROM_QSTR(MP_QSTR_repl_compile),   MP_ROM_PTR(&ucode_repl_compile_obj)},
-        {MP_ROM_QSTR(MP_QSTR_repl_call),      MP_ROM_PTR(&ucode_repl_call_obj)},
+        {MP_ROM_QSTR(MP_QSTR_repl_input),               MP_ROM_PTR(&ucode_repl_input_obj)},
+        {MP_ROM_QSTR(MP_QSTR_repl_compile),             MP_ROM_PTR(&ucode_repl_compile_obj)},
+        {MP_ROM_QSTR(MP_QSTR_repl_call),                MP_ROM_PTR(&ucode_repl_call_obj)},
+
+        {MP_ROM_QSTR(MP_QSTR_MICROPY_GIT_TAG),          MP_ROM_PTR(&ucode_MICROPY_GIT_TAG_obj)},
+        {MP_ROM_QSTR(MP_QSTR_MICROPY_BUILD_DATE),       MP_ROM_PTR(&ucode_MICROPY_BUILD_DATE_obj)},
+        {MP_ROM_QSTR(MP_QSTR_MICROPY_HW_BOARD_NAME),    MP_ROM_PTR(&ucode_MICROPY_HW_BOARD_NAME_obj)},
+        {MP_ROM_QSTR(MP_QSTR_MICROPY_HW_MCU_NAME),      MP_ROM_PTR(&ucode_MICROPY_HW_MCU_NAME_obj)},
 };
+
 STATIC MP_DEFINE_CONST_DICT(ucode_module_globals, ucode_module_globals_table);
 
 const mp_obj_module_t mp_module_ucode = {

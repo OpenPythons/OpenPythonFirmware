@@ -13,14 +13,6 @@ def components(device: str) -> List[str]:
     pass
 
 
-def component_count() -> int:
-    pass
-
-
-def max_components() -> int:
-    pass
-
-
 def methods(address: str) -> List[str]:
     pass
 

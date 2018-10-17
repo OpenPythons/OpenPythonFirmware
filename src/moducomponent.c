@@ -18,20 +18,6 @@ STATIC mp_obj_t ucomponent_components(size_t n_args, const mp_obj_t *args) {
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(ucomponent_components_obj, 0, 1, ucomponent_components);
 
 
-STATIC mp_obj_t ucomponent_component_count() {
-    return wrap_result(__syscall0(SYS_COMPONENT_COUNT));
-}
-
-MP_DEFINE_CONST_FUN_OBJ_0(ucomponent_component_count_obj, ucomponent_component_count);
-
-
-STATIC mp_obj_t ucomponent_max_components() {
-    return wrap_result(__syscall0(SYS_COMPONENT_MAX));
-}
-
-MP_DEFINE_CONST_FUN_OBJ_0(ucomponent_max_components_obj, ucomponent_max_components);
-
-
 STATIC mp_obj_t ucomponent_methods(mp_obj_t address_obj) {
     mp_obj_t items[] = {address_obj};
     msgpack_result_t result = msgpack_args_dumps(1, items);
@@ -75,8 +61,6 @@ STATIC const mp_rom_map_elem_t ucomponent_module_globals_table[] = {
 
         // components
         {MP_ROM_QSTR(MP_QSTR_components),           MP_ROM_PTR(&ucomponent_components_obj)},
-        {MP_ROM_QSTR(MP_QSTR_component_count),      MP_ROM_PTR(&ucomponent_component_count_obj)},
-        {MP_ROM_QSTR(MP_QSTR_max_components),       MP_ROM_PTR(&ucomponent_max_components_obj)},
         {MP_ROM_QSTR(MP_QSTR_methods),              MP_ROM_PTR(&ucomponent_methods_obj)},
         {MP_ROM_QSTR(MP_QSTR_doc),                  MP_ROM_PTR(&ucomponent_doc_obj)},
 

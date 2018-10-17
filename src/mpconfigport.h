@@ -121,7 +121,7 @@
 #define MICROPY_PY_BUILTINS_MIN_MAX (1)
 #define MICROPY_PY_BUILTINS_POW3 (1)
 #define MICROPY_PY_BUILTINS_HELP (1)
-#define MICROPY_PY_BUILTINS_HELP_TEXT openpie_help_text
+#define MICROPY_PY_BUILTINS_HELP_TEXT openpython_help_text
 #define MICROPY_PY_BUILTINS_HELP_MODULES (1)
 #define MICROPY_PY___FILE__ (1)
 #define MICROPY_PY_MICROPYTHON_MEM_INFO (1)
@@ -203,9 +203,9 @@ extern const struct _mp_print_t debug_print;
 #define INT_FMT "%d"
 
 // Machine settings
-#define MICROPY_HW_BOARD_NAME "OpenPie"
+#define MICROPY_HW_BOARD_NAME "OpenPython"
 #define MICROPY_HW_MCU_NAME "Cortex-M0"
-#define MICROPY_OPENPIE_VFS (1)
+#define MICROPY_OPENPYTHON_VFS (1)
 
 #define MP_SSIZE_MAX (0x7fffffff)
 #define MP_NEED_LOG2 (1)
@@ -239,8 +239,8 @@ extern const struct _mp_obj_type_t mp_type_SystemError;
     mp_obj_t stderr_hook_obj; \
     mp_obj_t object_hook_obj; \
 
-#define mp_type_fileio mp_type_vfs_openpie_fileio
-#define mp_type_textio mp_type_vfs_openpie_textio
+#define mp_type_fileio mp_type_vfs_openpython_fileio
+#define mp_type_textio mp_type_vfs_openpython_textio
 
 #define mp_import_stat mp_vfs_import_stat
 #define mp_builtin_open mp_vfs_open

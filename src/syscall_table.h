@@ -1,4 +1,4 @@
-// syscall_table.h : opmod/src/main/java/kr/pe/ecmaxp/openpie/arch/consts/OpenPieSystemCallTable.kt
+// syscall_table.h : opmod/src/main/java/kr/pe/ecmaxp/openpython/arch/consts/OpenPythonSystemCallTable.kt
 
 #define SYS_DEBUG (0x010000)
 

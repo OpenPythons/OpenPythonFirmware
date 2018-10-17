@@ -1,5 +1,5 @@
-#ifndef OPENPIE_MACHINE_H
-#define OPENPIE_MACHINE_H
+#ifndef OPENPYTHON_MACHINE_H
+#define OPENPYTHON_MACHINE_H
 
 #include "py/objexcept.h"
 
@@ -9,4 +9,4 @@ void _exit(int status);
 void nlr_jump_fail(void *val);
 void NORETURN __fatal_error(const char *msg);
 
-#endif // OPENPIE_MACHINE_H
+#endif // OPENPYTHON_MACHINE_H

@@ -36,7 +36,7 @@ CFLAGS += -O2 -DNDEBUG
 endif
 
 
-LDFLAGS = -nostdlib -T openpie.ld -Map=$@.map --cref
+LDFLAGS = -nostdlib -T openpython.ld -Map=$@.map --cref
 LIBS = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 
 # Remove uncalled code from the final image.
@@ -59,7 +59,7 @@ SRC_C = \
 	modumsgpack.c \
 	moduvalue.c \
 	gccollect.c \
-	openpie_vfs.c \
+	openpython_vfs.c \
 	msgpack.c \
 	syscall.c \
 

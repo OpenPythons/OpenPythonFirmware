@@ -23,15 +23,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef MICROPY_INCLUDED_EXTMOD_VFS_OPENPIE_H
-#define MICROPY_INCLUDED_EXTMOD_VFS_OPENPIE_H
+#ifndef MICROPY_INCLUDED_EXTMOD_VFS_OPENPYTHON_H
+#define MICROPY_INCLUDED_EXTMOD_VFS_OPENPYTHON_H
 
 #include "py/lexer.h"
 #include "py/obj.h"
 
-extern const mp_obj_type_t mp_type_vfs_openpie_fileio;
-extern const mp_obj_type_t mp_type_vfs_openpie_textio;
+extern const mp_obj_type_t mp_type_vfs_openpython_fileio;
+extern const mp_obj_type_t mp_type_vfs_openpython_textio;
 
-mp_obj_t mp_vfs_openpie_file_open(const mp_obj_type_t *type, mp_obj_t address_in, mp_obj_t path_in, mp_obj_t mode_in);
+mp_obj_t mp_vfs_openpython_file_open(const mp_obj_type_t *type, mp_obj_t address_in, mp_obj_t path_in, mp_obj_t mode_in);
 
-#endif // MICROPY_INCLUDED_EXTMOD_VFS_OPENPIE_H
+#endif // MICROPY_INCLUDED_EXTMOD_VFS_OPENPYTHON_H

@@ -45,9 +45,9 @@ void Reset_Handler(void) {
         }
     }
 
-    // OPENPIE_CONTROLLER->PENDING = (uint32_t) &MP_STATE_VM(mp_pending_exception);
-    // OPENPIE_CONTROLLER->EXCEPTION = (uint32_t) &MP_STATE_VM(mp_kbd_exception);
-    // OPENPIE_CONTROLLER->INTR_CHAR = (uint32_t) &mp_interrupt_char;
+    // OPENPYTHON_CONTROLLER->PENDING = (uint32_t) &MP_STATE_VM(mp_pending_exception);
+    // OPENPYTHON_CONTROLLER->EXCEPTION = (uint32_t) &MP_STATE_VM(mp_kbd_exception);
+    // OPENPYTHON_CONTROLLER->INTR_CHAR = (uint32_t) &mp_interrupt_char;
 
     // jump to board initialisation
     _start();

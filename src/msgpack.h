@@ -1,5 +1,5 @@
-#ifndef OPENPIE_UMSGPACK_H
-#define OPENPIE_UMSGPACK_H
+#ifndef OPENPYTHON_UMSGPACK_H
+#define OPENPYTHON_UMSGPACK_H
 
 #include "py/obj.h"
 #include "lib/mpack/mpack.h"
@@ -19,4 +19,4 @@ void msgpack_dump_close(mpack_writer_t *writer);
 msgpack_result_t msgpack_dumps(mp_obj_t obj);
 msgpack_result_t msgpack_args_dumps(size_t n_args, const mp_obj_t *args);
 
-#endif // OPENPIE_UMSGPACK_H
+#endif // OPENPYTHON_UMSGPACK_H

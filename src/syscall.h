@@ -1,5 +1,5 @@
-#ifndef OPENPIE_SYSCALL_H
-#define OPENPIE_SYSCALL_H
+#ifndef OPENPYTHON_SYSCALL_H
+#define OPENPYTHON_SYSCALL_H
 
 #include "syscall_arch.h"
 #include "syscall_table.h"
@@ -10,4 +10,4 @@ typedef struct _syscall_result_t {
     size_t len;
 } syscall_result_t;
 
-#endif //OPENPIE_SYSCALL_H
+#endif //OPENPYTHON_SYSCALL_H

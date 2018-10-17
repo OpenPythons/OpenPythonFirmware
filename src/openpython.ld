@@ -1,5 +1,5 @@
 /*
-    GNU linker script for OPENPIE
+    GNU linker script for OpenPython
 */
 
 /* Specify the memory areas */

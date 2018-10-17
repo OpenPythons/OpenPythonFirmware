@@ -43,24 +43,17 @@ MP_DEFINE_CONST_FUN_OBJ_VAR(ucomputer_push_signal_obj, 1, ucomputer_push_signal)
 
 STATIC mp_obj_t ucomputer_pop_signal(mp_obj_t ticks_obj) {
     mp_int_t ticks = mp_obj_get_int(ticks_obj);
-    return wrap_result(__syscall1(SYS_SIGNAL_REQUEST, (int) ticks));
+    return wrap_result(__syscall1(SYS_SIGNAL_POP, (int) ticks));
 }
 
 MP_DEFINE_CONST_FUN_OBJ_1(ucomputer_pop_signal_obj, ucomputer_pop_signal);
 
 
-STATIC mp_obj_t ucomputer_get_cost_per_tick() {
-    return wrap_result(__syscall0(SYS_COMPUTER_GET_COST_PER_TICK));
-}
-
-MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_get_cost_per_tick_obj, ucomputer_get_cost_per_tick);
-
-
-STATIC mp_obj_t ucomputer_last_error() {
+STATIC mp_obj_t ucomputer_get_last_error() {
     return wrap_result(__syscall0(SYS_COMPUTER_LAST_ERROR));
 }
 
-MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_last_error_obj, ucomputer_last_error);
+MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_get_last_error_obj, ucomputer_get_last_error);
 
 
 STATIC mp_obj_t ucomputer_beep(size_t n_args, const mp_obj_t *args) {
@@ -87,11 +80,11 @@ STATIC mp_obj_t ucomputer_beep(size_t n_args, const mp_obj_t *args) {
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(ucomputer_beep_obj, 1, 2, ucomputer_beep);
 
 
-STATIC mp_obj_t ucomputer_users() {
+STATIC mp_obj_t ucomputer_get_users() {
     return wrap_result(__syscall0(SYS_COMPUTER_USERS));
 }
 
-MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_users_obj, ucomputer_users);
+MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_get_users_obj, ucomputer_get_users);
 
 
 STATIC mp_obj_t ucomputer_add_user(mp_obj_t user_obj) {
@@ -128,6 +121,44 @@ STATIC mp_obj_t ucomputer_get_tmp_address() {
 MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_get_tmp_address_obj, ucomputer_get_tmp_address);
 
 
+STATIC mp_obj_t ucomputer_get_energy() {
+    return wrap_result(__syscall0(SYS_COMPUTER_ENERGY));
+}
+
+MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_get_energy_obj, ucomputer_get_energy);
+
+
+STATIC mp_obj_t ucomputer_get_max_energy() {
+    return wrap_result(__syscall0(SYS_COMPUTER_MAX_ENERGY));
+}
+
+MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_get_max_energy_obj, ucomputer_get_max_energy);
+
+
+STATIC mp_obj_t ucomputer_get_architectures() {
+    return wrap_result(__syscall0(SYS_COMPUTER_GET_ARCHITECTURES));
+}
+
+MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_get_architectures_obj, ucomputer_get_architectures);
+
+
+STATIC mp_obj_t ucomputer_get_architecture() {
+    return wrap_result(__syscall0(SYS_COMPUTER_GET_ARCHITECTURE));
+}
+
+MP_DEFINE_CONST_FUN_OBJ_0(ucomputer_get_architecture_obj, ucomputer_get_architecture);
+
+
+STATIC mp_obj_t ucomputer_set_architecture(mp_obj_t name_obj) {
+    size_t len = 0;
+    const char *buf = mp_obj_str_get_data(name_obj, &len);
+
+    return wrap_result(__syscall2(SYS_COMPUTER_SET_ARCHITECTURE, (int) buf, (int) len));
+}
+
+MP_DEFINE_CONST_FUN_OBJ_1(ucomputer_set_architecture_obj, ucomputer_set_architecture);
+
+
 STATIC const mp_rom_map_elem_t ucomputer_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_ucomputer)},
 
@@ -141,20 +172,28 @@ STATIC const mp_rom_map_elem_t ucomputer_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR_pop_signal),           MP_ROM_PTR(&ucomputer_pop_signal_obj)},
 
         // machine
-        {MP_ROM_QSTR(MP_QSTR_get_cost_per_tick),    MP_ROM_PTR(&ucomputer_get_cost_per_tick_obj)},
-        {MP_ROM_QSTR(MP_QSTR_last_error),           MP_ROM_PTR(&ucomputer_last_error_obj)},
+        {MP_ROM_QSTR(MP_QSTR_get_last_error),       MP_ROM_PTR(&ucomputer_get_last_error_obj)},
 
         // beep
         {MP_ROM_QSTR(MP_QSTR_beep),                 MP_ROM_PTR(&ucomputer_beep_obj)},
 
         // users
-        {MP_ROM_QSTR(MP_QSTR_users),                MP_ROM_PTR(&ucomputer_users_obj)},
+        {MP_ROM_QSTR(MP_QSTR_get_users),            MP_ROM_PTR(&ucomputer_get_users_obj)},
         {MP_ROM_QSTR(MP_QSTR_add_user),             MP_ROM_PTR(&ucomputer_add_user_obj)},
         {MP_ROM_QSTR(MP_QSTR_remove_user),          MP_ROM_PTR(&ucomputer_remove_user_obj)},
 
         // address
         {MP_ROM_QSTR(MP_QSTR_get_computer_address), MP_ROM_PTR(&ucomputer_get_computer_address_obj)},
         {MP_ROM_QSTR(MP_QSTR_get_tmp_address),      MP_ROM_PTR(&ucomputer_get_tmp_address_obj)},
+
+        // energy
+        {MP_ROM_QSTR(MP_QSTR_get_energy),           MP_ROM_PTR(&ucomputer_get_energy_obj)},
+        {MP_ROM_QSTR(MP_QSTR_get_max_energy),       MP_ROM_PTR(&ucomputer_get_max_energy_obj)},
+
+        // architecture
+        {MP_ROM_QSTR(MP_QSTR_get_architectures),    MP_ROM_PTR(&ucomputer_get_architectures_obj)},
+        {MP_ROM_QSTR(MP_QSTR_get_architecture),     MP_ROM_PTR(&ucomputer_get_architecture_obj)},
+        {MP_ROM_QSTR(MP_QSTR_set_architecture),     MP_ROM_PTR(&ucomputer_set_architecture_obj)},
 };
 
 STATIC MP_DEFINE_CONST_DICT(ucomputer_module_globals, ucomputer_module_globals_table);

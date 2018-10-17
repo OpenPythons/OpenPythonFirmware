@@ -1,23 +1,31 @@
 # ucomponent
 "functions related to the components"
-from typing import Dict, List, Any, Union, overload, Tuple
+from typing import Dict, List, Any, Union, overload, Tuple, Optional
 
 
 @overload
-def components() -> Dict[str, str]:
+def get_list() -> Dict[str, str]:
     pass
 
 
 @overload
-def components(device: str) -> List[str]:
+def get_list(device: str) -> List[str]:
     pass
 
 
-def methods(address: str) -> List[str]:
+def get_type(address: str) -> Optional[str]:
     pass
 
 
-def doc(address: str, method: str) -> str:
+def get_slot(address: str) -> Optional[str]:
+    pass
+
+
+def get_methods(address: str) -> List[str]:
+    pass
+
+
+def get_doc(address: str, method: str) -> Optional[str]:
     pass
 
 

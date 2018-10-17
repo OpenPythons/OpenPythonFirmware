@@ -6,6 +6,13 @@
 mp_obj_t wrap_result(int code);
 
 
+STATIC mp_obj_t utime_time_real() {
+    return wrap_result(__syscall0(SYS_TIMER_REAL_TIME));
+}
+
+MP_DEFINE_CONST_FUN_OBJ_0(utime_time_real_obj, utime_time_real);
+
+
 STATIC mp_obj_t utime_time_world() {
     return wrap_result(__syscall0(SYS_TIMER_WORLD_TIME));
 }
@@ -41,6 +48,8 @@ STATIC const mp_rom_map_elem_t time_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR_ticks_diff), MP_ROM_PTR(&mp_utime_ticks_diff_obj)},
         
         // OpenComputers
+        {MP_ROM_QSTR(MP_QSTR_time),       MP_ROM_PTR(&utime_time_real_obj)}, // alias
+        {MP_ROM_QSTR(MP_QSTR_time_real),  MP_ROM_PTR(&utime_time_real_obj)},
         {MP_ROM_QSTR(MP_QSTR_time_world), MP_ROM_PTR(&utime_time_world_obj)},
         {MP_ROM_QSTR(MP_QSTR_time_up),    MP_ROM_PTR(&utime_time_up_obj)},
         {MP_ROM_QSTR(MP_QSTR_time_cpu),   MP_ROM_PTR(&utime_time_cpu_obj)},

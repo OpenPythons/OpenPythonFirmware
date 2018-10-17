@@ -2,9 +2,9 @@ def bios():
     globals().pop('bios')
 
     from ucomputer import crash
-    from ucomponent import invoke, components
+    from ucomponent import invoke, get_list
 
-    eeproms = components("eeprom")
+    eeproms = get_list("eeprom")
     if not eeproms:
         crash("no bios found; install a configured EEPROM with Python")
 

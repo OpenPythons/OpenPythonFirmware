@@ -3,18 +3,18 @@
 
 def main():
     globals().pop('main')
-    from ucomponent import invoke, components
+    from ucomponent import invoke, get_list as get_components
     from ucomputer import crash, get_computer_address
 
     def component(t):
-        seq = components(t)
+        seq = get_components(t)
         return seq[0] if seq else None
 
     def check_bootable(filesystems, address):
         return address in filesystems and invoke(address, 'exists', '/init.py')
 
     eeprom = __path__
-    filesystems = components("filesystem")
+    filesystems = get_components("filesystem")
 
     address = invoke(eeprom, 'getData').decode()
     if not check_bootable(filesystems, address):

@@ -5,7 +5,7 @@
 mp_obj_t wrap_result(int code);
 
 
-STATIC mp_obj_t ucomponent_components(size_t n_args, const mp_obj_t *args) {
+STATIC mp_obj_t ucomponent_get_list(size_t n_args, const mp_obj_t *args) {
     if (n_args == 0) {
         return wrap_result(__syscall2(SYS_COMPONENT_LIST, 0, 0));
     } else {
@@ -15,25 +15,43 @@ STATIC mp_obj_t ucomponent_components(size_t n_args, const mp_obj_t *args) {
     }
 }
 
-MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(ucomponent_components_obj, 0, 1, ucomponent_components);
+MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(ucomponent_get_list_obj, 0, 1, ucomponent_get_list);
 
 
-STATIC mp_obj_t ucomponent_methods(mp_obj_t address_obj) {
+STATIC mp_obj_t ucomponent_get_type(mp_obj_t address_obj) {
+    mp_obj_t items[] = {address_obj};
+    msgpack_result_t result = msgpack_args_dumps(1, items);
+    return wrap_result(__syscall2(SYS_COMPONENT_TYPE, (int)result.data, (int)result.size));
+}
+
+MP_DEFINE_CONST_FUN_OBJ_1(ucomponent_get_type_obj, ucomponent_get_type);
+
+
+STATIC mp_obj_t ucomponent_get_slot(mp_obj_t address_obj) {
+    mp_obj_t items[] = {address_obj};
+    msgpack_result_t result = msgpack_args_dumps(1, items);
+    return wrap_result(__syscall2(SYS_COMPONENT_SLOT, (int)result.data, (int)result.size));
+}
+
+MP_DEFINE_CONST_FUN_OBJ_1(ucomponent_get_slot_obj, ucomponent_get_slot);
+
+
+STATIC mp_obj_t ucomponent_get_methods(mp_obj_t address_obj) {
     mp_obj_t items[] = {address_obj};
     msgpack_result_t result = msgpack_args_dumps(1, items);
     return wrap_result(__syscall2(SYS_COMPONENT_METHODS, (int)result.data, (int)result.size));
 }
 
-MP_DEFINE_CONST_FUN_OBJ_1(ucomponent_methods_obj, ucomponent_methods);
+MP_DEFINE_CONST_FUN_OBJ_1(ucomponent_get_methods_obj, ucomponent_get_methods);
 
 
-STATIC mp_obj_t ucomponent_doc(mp_obj_t address_obj, mp_obj_t method_obj) {
+STATIC mp_obj_t ucomponent_get_doc(mp_obj_t address_obj, mp_obj_t method_obj) {
     mp_obj_t items[] = {address_obj, method_obj};
     msgpack_result_t result = msgpack_args_dumps(2, items);
     return wrap_result(__syscall2(SYS_COMPONENT_DOC, (int)result.data, (int)result.size));
 }
 
-MP_DEFINE_CONST_FUN_OBJ_2(ucomponent_doc_obj, ucomponent_doc);
+MP_DEFINE_CONST_FUN_OBJ_2(ucomponent_get_doc_obj, ucomponent_get_doc);
 
 
 STATIC mp_obj_t ucomponent_invoke(size_t n_args, const mp_obj_t *args) {
@@ -60,9 +78,11 @@ STATIC const mp_rom_map_elem_t ucomponent_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_ucomponent)},
 
         // components
-        {MP_ROM_QSTR(MP_QSTR_components),           MP_ROM_PTR(&ucomponent_components_obj)},
-        {MP_ROM_QSTR(MP_QSTR_methods),              MP_ROM_PTR(&ucomponent_methods_obj)},
-        {MP_ROM_QSTR(MP_QSTR_doc),                  MP_ROM_PTR(&ucomponent_doc_obj)},
+        {MP_ROM_QSTR(MP_QSTR_get_list),             MP_ROM_PTR(&ucomponent_get_list_obj)},
+        {MP_ROM_QSTR(MP_QSTR_get_type),             MP_ROM_PTR(&ucomponent_get_type_obj)},
+        {MP_ROM_QSTR(MP_QSTR_get_slot),             MP_ROM_PTR(&ucomponent_get_slot_obj)},
+        {MP_ROM_QSTR(MP_QSTR_get_methods),          MP_ROM_PTR(&ucomponent_get_methods_obj)},
+        {MP_ROM_QSTR(MP_QSTR_get_doc),              MP_ROM_PTR(&ucomponent_get_doc_obj)},
 
         // invoke
         {MP_ROM_QSTR(MP_QSTR_invoke),               MP_ROM_PTR(&ucomponent_invoke_obj)},

@@ -26,6 +26,7 @@ void mp_init_port() {
     MP_STATE_PORT(signal_hook_obj) = mp_const_none;
     MP_STATE_PORT(stdin_hook_obj) = mp_const_none;
     MP_STATE_PORT(stdout_hook_obj) = mp_const_none;
+    MP_STATE_PORT(stderr_hook_obj) = mp_const_none;
 }
 
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {

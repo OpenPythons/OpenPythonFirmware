@@ -8,6 +8,16 @@
 #include "mphalport.h"
 #include "syscall.h"
 
+
+void mp_hal_stdio_tx_strn(mp_obj_t hook_obj, const char *str, mp_uint_t len) {
+    if (hook_obj == mp_const_none) {
+        __syscall2(SYS_DEBUG, (int)str, (int)len);
+    } else {
+        mp_obj_t str_obj = mp_obj_new_str(str, len);
+        mp_call_function_1(hook_obj, str_obj);
+    }
+}
+
 int mp_hal_stdin_rx_chr(void) {
     if (MP_STATE_PORT(stdin_hook_obj) == mp_const_none) {
         return 0;
@@ -22,12 +32,7 @@ void mp_hal_stdout_tx_str(const char *str) {
 }
 
 void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
-    if (MP_STATE_PORT(stdout_hook_obj) == mp_const_none) {
-        __syscall2(SYS_DEBUG, (int)str, (int)len);
-    } else {
-        mp_obj_t str_obj = mp_obj_new_str(str, len);
-        mp_call_function_1(MP_STATE_PORT(stdout_hook_obj), str_obj);
-    }
+    mp_hal_stdio_tx_strn(MP_STATE_PORT(stdout_hook_obj), str, len);
 }
 
 void mp_hal_stdout_tx_strn_cooked(const char *str, size_t len) {

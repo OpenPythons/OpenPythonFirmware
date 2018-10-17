@@ -236,6 +236,7 @@ extern const struct _mp_obj_type_t mp_type_SystemError;
     mp_obj_t signal_hook_obj; \
     mp_obj_t stdin_hook_obj; \
     mp_obj_t stdout_hook_obj; \
+    mp_obj_t stderr_hook_obj; \
     mp_obj_t object_hook_obj; \
 
 #define mp_type_fileio mp_type_vfs_openpie_fileio

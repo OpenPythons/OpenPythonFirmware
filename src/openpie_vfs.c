@@ -121,9 +121,24 @@ STATIC mp_uint_t vfs_openpie_file_write(mp_obj_t o_in, const void *buf, mp_uint_
     mp_obj_vfs_openpie_file_t *o = MP_OBJ_TO_PTR(o_in);
     check_fd_is_open(o);
 #if MICROPY_PY_OS_DUPTERM
-    if (o->fd <= STDERR_FILENO && o->flag & 1) {
-        mp_hal_stdout_tx_strn(buf, size);
-        return size;
+    if (o->flag & 1) {
+        switch (o->fd) {
+            case STDIN_FILENO:
+                return 0;
+            case STDOUT_FILENO:
+                // mp_hal_stdout_tx_strn(buf, size);
+                mp_hal_stdio_tx_strn(MP_STATE_PORT(stdout_hook_obj), buf, size);
+                return size;
+            case STDERR_FILENO:
+            {
+                mp_obj_t stdio_hook_obj = MP_STATE_PORT(stderr_hook_obj);
+                if (stdio_hook_obj == NULL)
+                    stdio_hook_obj = MP_STATE_PORT(stdout_hook_obj);
+
+                mp_hal_stdio_tx_strn(stdio_hook_obj, buf, size);
+                return size;
+            }
+        }
     }
 #endif
     int written = 0;

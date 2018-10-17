@@ -24,6 +24,14 @@ STATIC mp_obj_t machine_hook_signal(mp_obj_t hook_obj) {
 MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_signal_obj, machine_hook_signal);
 
 
+STATIC mp_obj_t machine_hook_stdin(mp_obj_t hook_obj) {
+    MP_STATE_PORT(stdin_hook_obj) = hook_obj;
+    return hook_obj;
+}
+
+MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_stdin_obj, machine_hook_stdin);
+
+
 STATIC mp_obj_t machine_hook_stdout(mp_obj_t hook_obj) {
     MP_STATE_PORT(stdout_hook_obj) = hook_obj;
     return hook_obj;
@@ -32,12 +40,12 @@ STATIC mp_obj_t machine_hook_stdout(mp_obj_t hook_obj) {
 MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_stdout_obj, machine_hook_stdout);
 
 
-STATIC mp_obj_t machine_hook_stdin(mp_obj_t hook_obj) {
-    MP_STATE_PORT(stdin_hook_obj) = hook_obj;
+STATIC mp_obj_t machine_hook_stderr(mp_obj_t hook_obj) {
+    MP_STATE_PORT(stderr_hook_obj) = hook_obj;
     return hook_obj;
 }
 
-MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_stdin_obj, machine_hook_stdin);
+MP_DEFINE_CONST_FUN_OBJ_1(machine_hook_stderr_obj, machine_hook_stderr);
 
 
 STATIC const mp_rom_map_elem_t machine_module_globals_table[] = {
@@ -48,8 +56,9 @@ STATIC const mp_rom_map_elem_t machine_module_globals_table[] = {
 
         // hook
         {MP_ROM_QSTR(MP_QSTR_hook_signal),          MP_ROM_PTR(&machine_hook_signal_obj)},
-        {MP_ROM_QSTR(MP_QSTR_hook_stdout),          MP_ROM_PTR(&machine_hook_stdout_obj)},
         {MP_ROM_QSTR(MP_QSTR_hook_stdin),           MP_ROM_PTR(&machine_hook_stdin_obj)},
+        {MP_ROM_QSTR(MP_QSTR_hook_stdout),          MP_ROM_PTR(&machine_hook_stdout_obj)},
+        {MP_ROM_QSTR(MP_QSTR_hook_stderr),          MP_ROM_PTR(&machine_hook_stderr_obj)},
 };
 
 STATIC MP_DEFINE_CONST_DICT(machine_module_globals, machine_module_globals_table);

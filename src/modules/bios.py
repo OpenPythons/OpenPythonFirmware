@@ -2,7 +2,7 @@ def bios():
     globals().pop('bios')
 
     from ucomputer import crash
-    from ucomponents import invoke, components
+    from ucomponent import invoke, components
 
     eeproms = components("eeprom")
     if not eeproms:

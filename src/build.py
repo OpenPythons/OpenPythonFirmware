@@ -8,7 +8,7 @@ from typing import TypeVar, Generic, Container
 
 from dataclasses import dataclass
 from elftools.elf.elffile import ELFFile
-from elftools.elf.sections import SymbolTableSection, Section, Symbol
+from elftools.elf.sections import SymbolTableSection, Symbol
 
 import re
 
@@ -84,23 +84,8 @@ def pretty_addr(addr: int, size=8) -> str:
 
 
 def process_elf(elf: ELFFile, map_file: Path):
-    assert elf.get_machine_arch() == "ARM"
-
-    if False:
-        print(">", "section")
-        for section_obj in find_section(elf, Section):  # type: Section
-            section = SimpleSection(section_obj.name, **section_obj.header)
-            if not section.sh_addr:
-                continue
-
-            print(
-                pretty_addr(section.sh_addr),
-                pretty_addr(section.sh_size, size=6),
-                section.sh_flags,
-                section.sh_type,
-                section.name,
-                sep="\t"
-            )
+    if elf.get_machine_arch() != "ARM":
+        raise Exception("Invalid machine arch {} (not ARM)".format(elf.get_machine_arch()))
 
     with map_file.open('w') as fp:
         type2typ = {

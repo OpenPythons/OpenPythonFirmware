@@ -17,7 +17,7 @@ BASE_FOLDER = FOLDER.parent
 OPMOD_PATH = BASE_FOLDER / "opmod"
 SOURCE_SYSCALL_TABLE: Path = OPMOD_PATH / "src/main/java/kr/pe/ecmaxp/openpython/arch/consts/OpenPythonSystemCallTable.kt"
 TARGET_SYSCALL_TABLE: Path = FOLDER / "syscall_table.h"
-TARGET_FOLDER: Path = OPMOD_PATH / "src/main/resources/assets/openpython/firmwares/debug"  # TODO: place version
+TARGET_FOLDER: Path = OPMOD_PATH / "src/main/resources/assets/openpython/firmwares/v1.0.0"  # TODO: place version
 
 
 @dataclass

@@ -32,33 +32,35 @@
 #include "py/reader.h"
 #include "extmod/vfs.h"
 
-#if MICROPY_READER_VFS
+#if MICROPY_READER_CUSTOM_VFS
+
+mp_lexer_t *mp_lexer_new_from_file(const char *filename) {
+    mp_reader_t reader;
+    mp_reader_new_file(&reader, filename);
+    return mp_lexer_new(qstr_from_str(filename), reader);
+}
 
 typedef struct _mp_reader_vfs_t {
     mp_obj_t file;
     uint16_t len;
     uint16_t pos;
-    byte buf[2048];
+    byte buf[4096];
 } mp_reader_vfs_t;
 
 STATIC mp_uint_t mp_reader_vfs_readbyte(void *data) {
     mp_reader_vfs_t *reader = (mp_reader_vfs_t*)data;
     if (reader->pos >= reader->len) {
-        if (reader->len < sizeof(reader->buf)) {
+        int errcode;
+        reader->len = mp_stream_rw(reader->file, reader->buf, sizeof(reader->buf),
+            &errcode, MP_STREAM_RW_READ | MP_STREAM_RW_ONCE);
+        if (errcode != 0) {
+            // TODO handle errors properly
             return MP_READER_EOF;
-        } else {
-            int errcode;
-            reader->len = mp_stream_rw(reader->file, reader->buf, sizeof(reader->buf),
-                &errcode, MP_STREAM_RW_READ | MP_STREAM_RW_ONCE);
-            if (errcode != 0) {
-                // TODO handle errors properly
-                return MP_READER_EOF;
-            }
-            if (reader->len == 0) {
-                return MP_READER_EOF;
-            }
-            reader->pos = 0;
         }
+        if (reader->len == 0) {
+            return MP_READER_EOF;
+        }
+        reader->pos = 0;
     }
     return reader->buf[reader->pos++];
 }
@@ -84,4 +86,4 @@ void mp_reader_new_file(mp_reader_t *reader, const char *filename) {
     reader->close = mp_reader_vfs_close;
 }
 
-#endif // MICROPY_READER_VFS
+#endif // MICROPY_READER_CUSTOM_VFS

@@ -60,6 +60,7 @@ SRC_C = \
 	moduvalue.c \
 	gccollect.c \
 	openpython_vfs.c \
+	vfs_reader.c \
 	msgpack.c \
 	syscall.c \
 

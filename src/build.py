@@ -144,7 +144,17 @@ def build(folder: Path = FOLDER, target_folder: Path = TARGET_FOLDER):
     shutil.copyfile(str(build_path / "firmware.bin"), str(target_folder / "firmware.bin"))
     shutil.copyfile(str(build_path / "firmware.elf"), str(target_folder / "firmware.elf"))
     shutil.copyfile(str(build_path / "firmware.elf.map"), str(target_folder / "firmware.elf.map"))
-    shutil.copyfile(str(folder / "eeprom.py"), str(target_folder / "eeprom.py"))
+
+    rom: Path = folder / "eeprom.py"
+    text = rom.read_text()
+    if text.startswith("# --"):
+        text = text[len("# "):]
+    else:
+        raise Exception("eeprom missing magic tag")
+
+    target_rom = (target_folder / "eeprom.py")
+    target_rom.write_text(text)
+
     print(target_folder / "firmware.bin")
 
 

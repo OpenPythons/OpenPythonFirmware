@@ -73,7 +73,12 @@ if __name__ == '__main__':
     main()
 """)
 
+    comment = b"--[==[", b"]==]"
+
     data = invoke(eeprom, 'get')
+    if data.startswith(comment[0]) and comment[1] in data:
+        data = data[len(comment[0]):].partition(comment[1])[0]
+
     context = {'__name__': '__main__', '__path__': eeprom}
 
     func = compile(data, "<EEPROM>", "exec")

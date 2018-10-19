@@ -12,12 +12,15 @@ from elftools.elf.sections import SymbolTableSection, Symbol
 
 import re
 
+VERSION = "v1.0.1"
+
 FOLDER = Path(__file__).parent
 BASE_FOLDER = FOLDER.parent
 OPMOD_PATH = BASE_FOLDER / "opmod"
 SOURCE_SYSCALL_TABLE: Path = OPMOD_PATH / "src/main/java/kr/pe/ecmaxp/openpython/arch/consts/OpenPythonSystemCallTable.kt"
 TARGET_SYSCALL_TABLE: Path = FOLDER / "syscall_table.h"
-TARGET_FOLDER: Path = OPMOD_PATH / "src/main/resources/assets/openpython/firmwares/v1.0.0"  # TODO: place version
+TARGET_FOLDER: Path = OPMOD_PATH / f"src/main/resources/assets/openpython/firmwares/{VERSION}"
+TARGET_FIRMWARE_FOLDER = BASE_FOLDER / "firmwares" / VERSION
 
 
 @dataclass
@@ -110,7 +113,9 @@ def process_elf(elf: ELFFile, map_file: Path):
                 )
 
 
-def build(folder: Path = FOLDER, target_folder: Path = TARGET_FOLDER):
+def build(folder: Path = FOLDER,
+          target_firmware_folder: Path = TARGET_FIRMWARE_FOLDER,
+          target_folder: Path = TARGET_FOLDER):
     build_path: Path = folder / "build"
 
     check_call(
@@ -120,15 +125,15 @@ def build(folder: Path = FOLDER, target_folder: Path = TARGET_FOLDER):
         stdin=DEVNULL
     )
 
-    target_folder.mkdir(parents=True, exist_ok=True)
+    target_firmware_folder.mkdir(parents=True, exist_ok=True)
 
     with (build_path / "firmware.elf").open('rb') as fp:
         elf = ELFFile(fp)
-        process_elf(elf, target_folder / "firmware.map")
+        process_elf(elf, target_firmware_folder / "firmware.map")
 
-    shutil.copyfile(str(build_path / "firmware.bin"), str(target_folder / "firmware.bin"))
-    shutil.copyfile(str(build_path / "firmware.elf"), str(target_folder / "firmware.elf"))
-    shutil.copyfile(str(build_path / "firmware.elf.map"), str(target_folder / "firmware.elf.map"))
+    shutil.copyfile(str(build_path / "firmware.bin"), str(target_firmware_folder / "firmware.bin"))
+    shutil.copyfile(str(build_path / "firmware.elf"), str(target_firmware_folder / "firmware.elf"))
+    shutil.copyfile(str(build_path / "firmware.elf.map"), str(target_firmware_folder / "firmware.elf.map"))
 
     rom: Path = folder / "eeprom.py"
     text = rom.read_text()
@@ -137,9 +142,14 @@ def build(folder: Path = FOLDER, target_folder: Path = TARGET_FOLDER):
     else:
         raise Exception("eeprom missing magic tag")
 
-    target_rom = (target_folder / "eeprom.py")
+    target_rom = (target_firmware_folder / "eeprom.py")
     target_rom.write_text(text)
 
+    shutil.copyfile(str(build_path / "firmware.bin"), str(target_folder / "firmware.bin"))
+    shutil.copyfile(str(target_firmware_folder / "firmware.map"), str(target_folder / "firmware.map"))
+    shutil.copyfile(str(target_firmware_folder / "eeprom.py"), str(target_folder / "eeprom.py"))
+
+    print(target_firmware_folder / "firmware.bin")
     print(target_folder / "firmware.bin")
 
 

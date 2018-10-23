@@ -50,17 +50,21 @@ typedef struct _mp_reader_vfs_t {
 STATIC mp_uint_t mp_reader_vfs_readbyte(void *data) {
     mp_reader_vfs_t *reader = (mp_reader_vfs_t*)data;
     if (reader->pos >= reader->len) {
-        int errcode;
-        reader->len = mp_stream_rw(reader->file, reader->buf, sizeof(reader->buf),
-            &errcode, MP_STREAM_RW_READ | MP_STREAM_RW_ONCE);
-        if (errcode != 0) {
-            // TODO handle errors properly
+        if (reader->len < sizeof(reader->buf)) {
             return MP_READER_EOF;
+        } else {
+            int errcode;
+            reader->len = mp_stream_rw(reader->file, reader->buf, sizeof(reader->buf),
+                &errcode, MP_STREAM_RW_READ | MP_STREAM_RW_ONCE);
+            if (errcode != 0) {
+                // TODO handle errors properly
+                return MP_READER_EOF;
+            }
+            if (reader->len == 0) {
+                return MP_READER_EOF;
+            }
+            reader->pos = 0;
         }
-        if (reader->len == 0) {
-            return MP_READER_EOF;
-        }
-        reader->pos = 0;
     }
     return reader->buf[reader->pos++];
 }

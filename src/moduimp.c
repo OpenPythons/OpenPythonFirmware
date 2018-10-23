@@ -6,7 +6,19 @@ STATIC mp_obj_t uimp_new_module(mp_obj_t name_obj) {
     const char *name = mp_obj_str_get_data(name_obj, &len);
 
     qstr qst = qstr_from_strn(name, len);
-    return mp_obj_new_module(qst);
+
+    // py/objmodule.c
+
+    // create new module object
+    mp_obj_module_t *o = m_new_obj(mp_obj_module_t);
+    o->base.type = &mp_type_module;
+    o->globals = MP_OBJ_TO_PTR(mp_obj_new_dict(MICROPY_MODULE_DICT_SIZE));
+
+    // store __name__ entry in the module
+    mp_obj_dict_store(MP_OBJ_FROM_PTR(o->globals), MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(qst));
+
+    // return the new module
+    return MP_OBJ_FROM_PTR(o);
 }
 
 MP_DEFINE_CONST_FUN_OBJ_1(uimp_new_module_obj, uimp_new_module);

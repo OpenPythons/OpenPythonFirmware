@@ -9,7 +9,7 @@ def get_list() -> Dict[str, str]:
 
 
 @overload
-def get_list(device: str) -> List[str]:
+def get_list(device: str) -> Dict[str, str]:
     pass
 
 
@@ -17,7 +17,7 @@ def get_type(address: str) -> Optional[str]:
     pass
 
 
-def get_slot(address: str) -> Optional[str]:
+def get_slot(address: str) -> Optional[int]:
     pass
 
 

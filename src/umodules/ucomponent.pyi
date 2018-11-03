@@ -31,3 +31,7 @@ def get_doc(address: str, method: str) -> Optional[str]:
 
 def invoke(address: str, method: str, *args: Any) -> Union[Any, Tuple[Any]]:
     pass
+
+
+def invokes(address: str, method: str, *args: Any) -> Tuple[Any]:
+    pass

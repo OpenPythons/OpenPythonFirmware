@@ -74,6 +74,14 @@ STATIC mp_obj_t ucomponent_invoke(size_t n_args, const mp_obj_t *args) {
 MP_DEFINE_CONST_FUN_OBJ_VAR(ucomponent_invoke_obj, 2, ucomponent_invoke);
 
 
+STATIC mp_obj_t ucomponent_invokes(size_t n_args, const mp_obj_t *args) {
+    msgpack_result_t result = msgpack_args_dumps(n_args, args);
+    return wrap_result(__syscall2(SYS_COMPONENT_INVOKE, (int)result.data, (int)result.size));
+}
+
+MP_DEFINE_CONST_FUN_OBJ_VAR(ucomponent_invokes_obj, 2, ucomponent_invokes);
+
+
 STATIC const mp_rom_map_elem_t ucomponent_module_globals_table[] = {
         {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_ucomponent)},
 
@@ -86,6 +94,7 @@ STATIC const mp_rom_map_elem_t ucomponent_module_globals_table[] = {
 
         // invoke
         {MP_ROM_QSTR(MP_QSTR_invoke),               MP_ROM_PTR(&ucomponent_invoke_obj)},
+        {MP_ROM_QSTR(MP_QSTR_invokes),              MP_ROM_PTR(&ucomponent_invokes_obj)},
 };
 
 STATIC MP_DEFINE_CONST_DICT(ucomponent_module_globals, ucomponent_module_globals_table);

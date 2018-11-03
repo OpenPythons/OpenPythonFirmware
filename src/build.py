@@ -12,12 +12,13 @@ from elftools.elf.sections import SymbolTableSection, Symbol
 
 import re
 
-VERSION = "v1.0.1"
+ABI_VERSION = "v1"
+VERSION = "v1.0.2"
 
 FOLDER = Path(__file__).parent
 BASE_FOLDER = FOLDER.parent
 OPMOD_PATH = BASE_FOLDER / "opmod"
-SOURCE_SYSCALL_TABLE: Path = OPMOD_PATH / "src/main/java/kr/pe/ecmaxp/openpython/arch/consts/OpenPythonSystemCallTable.kt"
+SOURCE_SYSCALL_TABLE: Path = OPMOD_PATH / f"src/main/java/kr/pe/ecmaxp/openpython/arch/versions/{ABI_VERSION}/OpenPythonSystemCallTable{ABI_VERSION.upper()}.kt"
 TARGET_SYSCALL_TABLE: Path = FOLDER / "syscall_table.h"
 TARGET_FOLDER: Path = OPMOD_PATH / f"src/main/resources/assets/openpython/firmwares/{VERSION}"
 TARGET_FIRMWARE_FOLDER = BASE_FOLDER / "firmwares" / VERSION
@@ -145,6 +146,7 @@ def build(folder: Path = FOLDER,
     target_rom = (target_firmware_folder / "eeprom.py")
     target_rom.write_text(text)
 
+    target_folder.mkdir(exist_ok=True)
     shutil.copyfile(str(build_path / "firmware.bin"), str(target_folder / "firmware.bin"))
     shutil.copyfile(str(target_firmware_folder / "firmware.map"), str(target_folder / "firmware.map"))
     shutil.copyfile(str(target_firmware_folder / "eeprom.py"), str(target_folder / "eeprom.py"))

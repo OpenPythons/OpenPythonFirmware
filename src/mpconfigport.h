@@ -1,5 +1,10 @@
 #include <stdint.h>
 
+// Hardware Information
+#define MICROPY_HW_BOARD_NAME "OpenPython"
+#define MICROPY_HW_MCU_NAME "Cortex-M0"
+#define MICROPY_PY_SYS_PLATFORM "OpenComputers"
+
 // Object representation
 #define MICROPY_OBJ_REPR (MICROPY_OBJ_REPR_A)
 
@@ -209,8 +214,6 @@ extern const struct _mp_print_t debug_print;
 #define INT_FMT "%d"
 
 // Machine settings
-#define MICROPY_HW_BOARD_NAME "OpenPython"
-#define MICROPY_HW_MCU_NAME "Cortex-M0"
 #define MICROPY_OPENPYTHON_VFS (1)
 
 #define MP_SSIZE_MAX (0x7fffffff)

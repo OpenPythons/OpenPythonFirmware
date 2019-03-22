@@ -1,19 +1,21 @@
-import io
-import shutil
-import sys
-import traceback
-from pathlib import Path
-from subprocess import check_call, DEVNULL, CalledProcessError
 from typing import TypeVar, Generic, Container
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from elftools.elf.elffile import ELFFile
 from elftools.elf.sections import SymbolTableSection, Symbol
 
+import io
 import re
+import shutil
+import sys
+import traceback
+# noinspection PyUnresolvedReferences
+from pathlib import Path
+# noinspection PyUnresolvedReferences
+from subprocess import check_call, DEVNULL, CalledProcessError
 
 ABI_VERSION = "v1"
-VERSION = "v1.0.2"
+VERSION = "v1.1.0"
 
 FOLDER = Path(__file__).parent
 BASE_FOLDER = FOLDER.parent
@@ -24,21 +26,33 @@ TARGET_FOLDER: Path = OPMOD_PATH / f"src/main/resources/assets/openpython/firmwa
 TARGET_FIRMWARE_FOLDER = BASE_FOLDER / "firmwares" / VERSION
 
 
-@dataclass
+@dataclass(frozen=True)
 class SymbolInfo:
     bind: str
     type: str
 
 
-@dataclass
+@dataclass(frozen=True, unsafe_hash=True)
 class SimpleSymbol:
     name: str
     st_name: int
     st_value: int
     st_size: int
     st_info: SymbolInfo
-    st_other: Container
+    st_other: Container = field(hash=False)
     st_shndx: int
+
+    @property
+    def address(self):
+        return self.st_value
+
+    @property
+    def size(self):
+        return self.st_size
+
+    @property
+    def stype(self):
+        return self.st_info.type
 
     @classmethod
     def from_symbol(cls, symbol_obj: Symbol):
@@ -87,31 +101,24 @@ def pretty_addr(addr: int, size=8) -> str:
     return "0x" + hex(addr)[2:].zfill(size)
 
 
-def process_elf(elf: ELFFile, map_file: Path):
+type2typ = {
+    "STT_OBJECT": "OBJECT",
+    "STT_FUNC": "FUNC",
+}
+
+
+def process_elf(elf: ELFFile):
     if elf.get_machine_arch() != "ARM":
         raise Exception("Invalid machine arch {} (not ARM)".format(elf.get_machine_arch()))
 
-    with map_file.open('w') as fp:
-        type2typ = {
-            "STT_OBJECT": "OBJECT",
-            "STT_FUNC": "FUNC",
-        }
-        for symbol_table in find_section(elf, SymbolTableSection):
-            symbols = [SimpleSymbol.from_symbol(obj) for obj in symbol_table.iter_symbols()
-                       if (obj['st_info']['type'] == "STT_FUNC" or
-                           obj['st_info']['type'] == "STT_OBJECT") and
-                       obj['st_info']['bind'] == "STB_GLOBAL"]
+    for symbol_table in find_section(elf, SymbolTableSection):
+        symbols = [SimpleSymbol.from_symbol(obj) for obj in symbol_table.iter_symbols()
+                   if (obj['st_info']['type'] == "STT_FUNC" or
+                       obj['st_info']['type'] == "STT_OBJECT") and
+                   obj['st_info']['bind'] == "STB_GLOBAL"]
 
-            for symbol in sorted(symbols, key=lambda x: x.st_value):
-                print(
-                    pretty_addr(symbol.st_value),
-                    pretty_addr(symbol.st_size, size=4),
-                    # symbol.st_info.bind,
-                    type2typ[symbol.st_info.type],
-                    symbol.name,
-                    sep="\t",
-                    file=fp,
-                )
+        for symbol in sorted(symbols, key=lambda x: x.st_value):
+            yield symbol
 
 
 def build(folder: Path = FOLDER,
@@ -130,7 +137,17 @@ def build(folder: Path = FOLDER,
 
     with (build_path / "firmware.elf").open('rb') as fp:
         elf = ELFFile(fp)
-        process_elf(elf, target_firmware_folder / "firmware.map")
+        with (target_firmware_folder / "firmware.map").open('w') as fp:
+            for symbol in process_elf(elf):
+                print(
+                    pretty_addr(symbol.st_value),
+                    pretty_addr(symbol.st_size, size=4),
+                    # symbol.st_info.bind,
+                    type2typ[symbol.st_info.type],
+                    symbol.name,
+                    sep="\t",
+                    file=fp,
+                )
 
     shutil.copyfile(str(build_path / "firmware.bin"), str(target_firmware_folder / "firmware.bin"))
     shutil.copyfile(str(build_path / "firmware.elf"), str(target_firmware_folder / "firmware.elf"))

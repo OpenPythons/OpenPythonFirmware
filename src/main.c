@@ -29,7 +29,7 @@ void mp_init_port() {
     MP_STATE_PORT(stderr_hook_obj) = mp_const_none;
 }
 
-void do_str(const char *src, mp_parse_input_kind_t input_kind) {
+void do_str(const char *src, mp_parse_input_kind_t input_kind) { // MP_PARSE_SINGLE_INPUT
     nlr_buf_t nlr;
     if (nlr_push(&nlr) == 0) {
         mp_lexer_t *lex = mp_lexer_new_from_str_len(MP_QSTR__lt_stdin_gt_, src, strlen(src), 0);
@@ -73,7 +73,6 @@ int main(int argc, char **argv) {
         mp_obj_list_init(mp_sys_path, 0);
         mp_obj_list_append(mp_sys_path, MP_OBJ_NEW_QSTR(MP_QSTR_));
         mp_obj_list_init(mp_sys_argv, 0);
-
 
         do_frozen("bios.py");
 

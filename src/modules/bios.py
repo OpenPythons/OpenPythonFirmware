@@ -18,6 +18,7 @@ def bios():
     context = {'__name__': '__main__', '__path__': eeprom}
 
     func = compile(data, "<EEPROM>", "exec")
+
     exec(func, context)
 
 
